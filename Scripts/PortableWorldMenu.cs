@@ -27,7 +27,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [SerializeField] private GameObject UIContainer;
     [SerializeField] private GameObject UI_ActiveIndicator;
     [SerializeField] private GameObject MainCanvas;
-    private float defaultIndicatorPos = 13.75f;
+    private Vector3 defaultIndicatorPos = new Vector3(0f, 13.75f, 0f);
     private GameObject SelectedMenuCanvas;
     private GameObject ListedMenuCanvas;
     private bool state = false;
@@ -123,7 +123,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
             MenusList[menuSelection].GetComponent<Canvas>().enabled = true;
             MenusList[menuSelection].GetComponent<GraphicRaycaster>().enabled = true;
             MenusList[menuSelection].GetComponent<BoxCollider>().enabled = true;
-            UI_ActiveIndicator.transform.localPosition = new Vector3(-3.5f, defaultIndicatorPos - (7 * menuSelection), 0f);
+            UI_ActiveIndicator.transform.localPosition = new Vector3(defaultIndicatorPos.x, defaultIndicatorPos.y - (7 * menuSelection), defaultIndicatorPos.z);
         }
         else
         {
