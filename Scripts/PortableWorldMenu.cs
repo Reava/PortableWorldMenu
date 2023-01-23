@@ -10,11 +10,14 @@ public class PortableWorldMenu : UdonSharpBehaviour
 {
     [Space]
     [Header("Settings")]
+    [Range(0f, 5f)]
+    [SerializeField] private float holdTimeSeconds = 1.5f;
+    [Space]
+    [Header("Menus stuff")]
     [Tooltip("Resets to the default tab of the menu when the menu closes")]
     [SerializeField] private bool resetTabOnExit = false;
     [SerializeField] private int defaultMenuTab = 0;
-    [Range(0f, 5f)]
-    [SerializeField] private float holdTimeSeconds = 1.5f;
+    [SerializeField] private GameObject[] MenusList;
     [Space]
     [Header("References")]
     [SerializeField] private Image ProgressIndicator;
@@ -23,11 +26,10 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [SerializeField] private GameObject CanvasTargetRotation;
     [SerializeField] private GameObject UIContainer;
     [SerializeField] private GameObject UI_ActiveIndicator;
-    [SerializeField] private GameObject[] MenusList;
+    [SerializeField] private GameObject MainCanvas;
     private float defaultIndicatorPos = 13.75f;
     private GameObject SelectedMenuCanvas;
     private GameObject ListedMenuCanvas;
-    private GameObject Canvas;
     private bool state = false;
     private float currentHeld;
     private float detectedScale = 1f;
@@ -35,9 +37,8 @@ public class PortableWorldMenu : UdonSharpBehaviour
     void Start()
     {
         if (!ProgressIndicator || !popupIndicator || !CanvasTargetPosition || !UIContainer || !CanvasTargetRotation) _sendDebugError();
-        UIContainer.SetActive(false);
+        _DespawnMenu();
         popupIndicator.SetActive(false);
-        Canvas = UIContainer.transform.GetChild(0).gameObject;
     }
 
     public void OnPlayerRespawn(VRCPlayerApi player)
@@ -59,7 +60,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
     {
         if (Input.GetAxisRaw("Oculus_CrossPlatform_SecondaryThumbstickVertical") < -0.95f || Input.GetKey(KeyCode.Keypad3))
         {
-            if (currentHeld == 0)
+            if (currentHeld == 0 && !state)
             {
                 popupIndicator.transform.SetPositionAndRotation(CanvasTargetPosition.transform.position, CanvasTargetRotation.transform.rotation);
                 popupIndicator.SetActive(true);
@@ -94,17 +95,17 @@ public class PortableWorldMenu : UdonSharpBehaviour
         if (resetTabOnExit) _ChangeMenuTo(defaultMenuTab);
         UIContainer.transform.SetPositionAndRotation(CanvasTargetPosition.transform.position, CanvasTargetRotation.transform.rotation);
         popupIndicator.SetActive(false);
-        Canvas.GetComponent<Canvas>().enabled = true;
-        Canvas.GetComponent<GraphicRaycaster>().enabled = true;
-        Canvas.GetComponent<BoxCollider>().enabled = true;
+        MainCanvas.GetComponent<Canvas>().enabled = true;
+        MainCanvas.GetComponent<GraphicRaycaster>().enabled = true;
+        MainCanvas.GetComponent<BoxCollider>().enabled = true;
     }
 
     public void _DespawnMenu()
     {
         state = false;
-        Canvas.GetComponent<Canvas>().enabled = false;
-        Canvas.GetComponent<GraphicRaycaster>().enabled = false;
-        Canvas.GetComponent<BoxCollider>().enabled = false;
+        MainCanvas.GetComponent<Canvas>().enabled = false;
+        MainCanvas.GetComponent<GraphicRaycaster>().enabled = false;
+        MainCanvas.GetComponent<BoxCollider>().enabled = false;
     }
 
     public void _ChangeMenuTo(int menuSelection)
