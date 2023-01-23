@@ -1,2 +1,5 @@
 # PortableWorldMenu
 A portable menu for VRChat worlds that can be summoned anywhere by users to control various settings
+
+# CURRENTLY IN DEV AND NON FUNCTIONING FOR THE MOST PART
+License still applies.
