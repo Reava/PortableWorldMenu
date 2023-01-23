@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class PortableWorldMenu : UdonSharpBehaviour
 {
     [Space]
-    [Header("Settings"), TextArea]
+    [Header("Settings")]
     [Tooltip("Resets to the default tab of the menu when the menu closes")]
     [SerializeField] private bool resetTabOnExit = false;
     [SerializeField] private int defaultMenuTab = 0;
@@ -17,6 +17,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [SerializeField] private float holdTimeSeconds = 1.5f;
     [Space]
     [Header("References")]
+    public Superbstingray.AvatarChangeEvents AvatarDetections;
     [SerializeField] private Image ProgressIndicator;
     [SerializeField] private GameObject popupIndicator;
     [SerializeField] private GameObject CanvasTargetPosition;
@@ -31,13 +32,17 @@ public class PortableWorldMenu : UdonSharpBehaviour
         if (!ProgressIndicator || !popupIndicator || !CanvasTargetPosition || !canvasContainer || !CanvasTargetRotation) _sendDebugError();
         canvasContainer.SetActive(false);
         popupIndicator.SetActive(false);
-        //set animation speed based on holdtimeseconds
+        //GetScale();
     }
 
     public void OnPlayerRespawn(VRCPlayerApi player)
     {
-        _DespawnMenu();
-        popupIndicator.SetActive(false);
+        if (player.isLocal)
+        {
+            _DespawnMenu();
+            popupIndicator.SetActive(false);
+            //GetScale();
+        }
     }
 
     public void Update()
