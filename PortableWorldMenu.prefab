@@ -4674,6 +4674,7 @@ MonoBehaviour:
   resetTabOnExit: 0
   defaultMenuTab: 0
   MenusList:
+  - {fileID: 3961818337923840212}
   - {fileID: 4161690059687908205}
   ProgressIndicator: {fileID: 5422354769544972138}
   popupIndicator: {fileID: 4630254772950741585}
