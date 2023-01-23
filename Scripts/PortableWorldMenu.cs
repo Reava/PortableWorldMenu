@@ -17,22 +17,27 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [SerializeField] private float holdTimeSeconds = 1.5f;
     [Space]
     [Header("References")]
-    public Superbstingray.AvatarChangeEvents AvatarDetections;
     [SerializeField] private Image ProgressIndicator;
     [SerializeField] private GameObject popupIndicator;
     [SerializeField] private GameObject CanvasTargetPosition;
     [SerializeField] private GameObject CanvasTargetRotation;
-    [SerializeField] private GameObject canvasContainer;
+    [SerializeField] private GameObject UIContainer;
+    [SerializeField] private GameObject UI_ActiveIndicator;
     [SerializeField] private GameObject[] MenusList;
+    private float defaultIndicatorPos = 13.75f;
+    private GameObject SelectedMenuCanvas;
+    private GameObject ListedMenuCanvas;
+    private GameObject Canvas;
     private bool state = false;
     private float currentHeld;
+    private float detectedScale = 1f;
 
     void Start()
     {
-        if (!ProgressIndicator || !popupIndicator || !CanvasTargetPosition || !canvasContainer || !CanvasTargetRotation) _sendDebugError();
-        canvasContainer.SetActive(false);
+        if (!ProgressIndicator || !popupIndicator || !CanvasTargetPosition || !UIContainer || !CanvasTargetRotation) _sendDebugError();
+        UIContainer.SetActive(false);
         popupIndicator.SetActive(false);
-        //GetScale();
+        Canvas = UIContainer.transform.GetChild(0).gameObject;
     }
 
     public void OnPlayerRespawn(VRCPlayerApi player)
@@ -41,8 +46,13 @@ public class PortableWorldMenu : UdonSharpBehaviour
         {
             _DespawnMenu();
             popupIndicator.SetActive(false);
-            //GetScale();
         }
+    }
+
+    public void _scaleChange(float scale)
+    {
+        detectedScale = scale;
+        //do smth
     }
 
     public void Update()
@@ -82,15 +92,19 @@ public class PortableWorldMenu : UdonSharpBehaviour
     {
         state = true;
         if (resetTabOnExit) _ChangeMenuTo(defaultMenuTab);
-        canvasContainer.transform.SetPositionAndRotation(CanvasTargetPosition.transform.position, CanvasTargetRotation.transform.rotation);
+        UIContainer.transform.SetPositionAndRotation(CanvasTargetPosition.transform.position, CanvasTargetRotation.transform.rotation);
         popupIndicator.SetActive(false);
-        canvasContainer.SetActive(true);
+        Canvas.GetComponent<Canvas>().enabled = true;
+        Canvas.GetComponent<GraphicRaycaster>().enabled = true;
+        Canvas.GetComponent<BoxCollider>().enabled = true;
     }
 
     public void _DespawnMenu()
     {
         state = false;
-        canvasContainer.SetActive(false);
+        Canvas.GetComponent<Canvas>().enabled = false;
+        Canvas.GetComponent<GraphicRaycaster>().enabled = false;
+        Canvas.GetComponent<BoxCollider>().enabled = false;
     }
 
     public void _ChangeMenuTo(int menuSelection)
@@ -99,9 +113,16 @@ public class PortableWorldMenu : UdonSharpBehaviour
         {
             foreach (GameObject menu in MenusList)
             {
-                menu.SetActive(false);
+                //menu.SetActive(false);
+                menu.GetComponent<Canvas>().enabled = false;
+                menu.GetComponent<GraphicRaycaster>().enabled = false;
+                menu.GetComponent<BoxCollider>().enabled = false;
             }
-            MenusList[menuSelection].SetActive(true);
+            //MenusList[menuSelection].SetActive(true);
+            MenusList[menuSelection].GetComponent<Canvas>().enabled = true;
+            MenusList[menuSelection].GetComponent<GraphicRaycaster>().enabled = true;
+            MenusList[menuSelection].GetComponent<BoxCollider>().enabled = true;
+            UI_ActiveIndicator.transform.localPosition = new Vector3(-3.5f, defaultIndicatorPos - (7 * menuSelection), 0f);
         }
         else
         {
