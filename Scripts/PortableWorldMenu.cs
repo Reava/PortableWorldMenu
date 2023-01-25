@@ -121,6 +121,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
         MainCanvas.GetComponent<Canvas>().enabled = true;
         MainCanvas.GetComponent<GraphicRaycaster>().enabled = true;
         MainCanvas.GetComponent<BoxCollider>().enabled = true;
+        AudioFeedbackSource.PlayOneShot(AudioclipMenuOpen);
     }
 
     public void _DespawnMenu()
@@ -130,6 +131,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
         MainCanvas.GetComponent<Canvas>().enabled = false;
         MainCanvas.GetComponent<GraphicRaycaster>().enabled = false;
         MainCanvas.GetComponent<BoxCollider>().enabled = false;
+        AudioFeedbackSource.PlayOneShot(AudioclipMenuClose);
     }
 
     public void _ChangeMenuTo(int menuSelection)
@@ -159,6 +161,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
                 }
             }
             UI_ActiveIndicator.transform.localPosition = new Vector3(defaultIndicatorPos.x, defaultIndicatorPos.y - (IndicatorHeight * menuSelection), defaultIndicatorPos.z);
+            AudioFeedbackSource.PlayOneShot(AudioclipMenuChange);
         }
         else
         {
