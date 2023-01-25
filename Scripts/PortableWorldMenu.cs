@@ -50,13 +50,13 @@ public class PortableWorldMenu : UdonSharpBehaviour
 
     void Start()
     {
-        if (!ProgressIndicator || !popupIndicator || !CanvasTargetPosition || !UIContainer || !CanvasTargetRotation || MenusList.Length > maxMenuNum) _sendDebugError();
+        if (!ProgressIndicator || !popupIndicator || !CanvasTargetPosition || !UIContainer || !CanvasTargetRotation || MenusList.Length > maxMenuNum) _sendDebugError("Missing Reference");
         foreach(GameObject o in MenusList)
         {
             if(o) if (!o.GetComponent<Canvas>() || !o.GetComponent<BoxCollider>() || !o.GetComponent<GraphicRaycaster>()) isValidRefs = false;
         }
         if (!MainCanvas.GetComponent<Canvas>() || !MainCanvas.GetComponent<BoxCollider>() || !MainCanvas.GetComponent<GraphicRaycaster>()) isValidRefs = false;
-        if (!isValidRefs) { UIContainer.SetActive(false); _sendDebugError(); } else { _DespawnMenu(); }
+        if (!isValidRefs) { UIContainer.SetActive(false); _sendDebugError("Invalid References"); } else { _DespawnMenu(); }
         popupIndicator.SetActive(false);
     }
 
@@ -132,6 +132,18 @@ public class PortableWorldMenu : UdonSharpBehaviour
         if (!isValidRefs || menuSelection >= maxMenuNum) return;
         if (MenusList.Length != 0)
         {
+
+            if (MenusList[menuSelection])
+            {
+                MenusList[menuSelection].GetComponent<Canvas>().enabled = true;
+                MenusList[menuSelection].GetComponent<GraphicRaycaster>().enabled = true;
+                MenusList[menuSelection].GetComponent<BoxCollider>().enabled = true;
+            }
+            else
+            {
+                Debug.LogError("Reava_UwUtils:<color=red> <b>Invalid menu selected</b></color>, please review <color=orange>references</color> on: " + gameObject + ".", gameObject);
+                return;
+            }
             foreach (GameObject menu in MenusList)
             {
                 if (menu)
@@ -141,19 +153,13 @@ public class PortableWorldMenu : UdonSharpBehaviour
                     menu.GetComponent<BoxCollider>().enabled = false;
                 }
             }
-            if (MenusList[menuSelection])
-            {
-                MenusList[menuSelection].GetComponent<Canvas>().enabled = true;
-                MenusList[menuSelection].GetComponent<GraphicRaycaster>().enabled = true;
-                MenusList[menuSelection].GetComponent<BoxCollider>().enabled = true;
-            }
             UI_ActiveIndicator.transform.localPosition = new Vector3(defaultIndicatorPos.x, defaultIndicatorPos.y - (IndicatorHeight * menuSelection), defaultIndicatorPos.z);
         }
         else
         {
-            _sendDebugError();
+            _sendDebugError("No Menus Found");
         }
     }
 
-    private void _sendDebugError() => Debug.LogError("Reava_UwUtils:<color=red> <b>Invalid references or settings</b></color>, please review <color=orange>references</color> on: " + gameObject + ".", gameObject);
+    private void _sendDebugError(string errorReported) => Debug.LogError("Reava_UwUtils:<color=red> <b>"+ errorReported + "</b></color>, please review <color=orange>References / Settings</color> on: " + gameObject + ".", gameObject);
 }
