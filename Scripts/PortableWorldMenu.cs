@@ -24,7 +24,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [Space]
     [Header("Menus stuff")]
     [Tooltip("Resets to the default tab of the menu when the menu closes")]
-    [SerializeField] private bool resetTabOnExit = false;
+    public bool resetTabOnExit = false;
     [SerializeField] private int defaultMenuTab = 0;
     private int maxMenuNum = 5;
     [Tooltip("Max # of menus is 5, please refer to documentation on how to edit this value.")]
@@ -40,6 +40,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [SerializeField] private GameObject MainCanvas;
     [Space]
     [Header("Audio")]
+    public bool playAudioFeedback = true;
     [SerializeField] private AudioSource AudioFeedbackSource;
     [SerializeField] private AudioClip AudioclipMenuOpen;
     [SerializeField] private AudioClip AudioclipMenuClose;
@@ -56,7 +57,8 @@ public class PortableWorldMenu : UdonSharpBehaviour
     void Start()
     {
         if (!ProgressIndicator || !popupIndicator || !CanvasTargetPosition || !UIContainer || !CanvasTargetRotation || MenusList.Length > maxMenuNum) _sendDebugError("Missing Reference");
-        foreach(GameObject o in MenusList)
+        if(playAudioFeedback) if(!AudioclipMenuOpen || !AudioclipMenuClose || !AudioclipMenuChange) _sendDebugError("Missing Audio Clip/Source");
+        foreach (GameObject o in MenusList)
         {
             if(o) if (!o.GetComponent<Canvas>() || !o.GetComponent<BoxCollider>() || !o.GetComponent<GraphicRaycaster>()) isValidRefs = false;
         }
@@ -121,7 +123,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
         MainCanvas.GetComponent<Canvas>().enabled = true;
         MainCanvas.GetComponent<GraphicRaycaster>().enabled = true;
         MainCanvas.GetComponent<BoxCollider>().enabled = true;
-        AudioFeedbackSource.PlayOneShot(AudioclipMenuOpen);
+        if (playAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuOpen);
     }
 
     public void _DespawnMenu()
@@ -131,7 +133,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
         MainCanvas.GetComponent<Canvas>().enabled = false;
         MainCanvas.GetComponent<GraphicRaycaster>().enabled = false;
         MainCanvas.GetComponent<BoxCollider>().enabled = false;
-        AudioFeedbackSource.PlayOneShot(AudioclipMenuClose);
+        if (playAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuClose);
     }
 
     public void _ChangeMenuTo(int menuSelection)
@@ -148,7 +150,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
             }
             else
             {
-                Debug.LogError("Reava_UwUtils:<color=red> <b>Invalid menu selected</b></color>, please review <color=orange>references</color> on: " + gameObject + ".", gameObject);
+                _sendDebugError("Invalid Menu Selected");
                 return;
             }
             foreach (GameObject menu in MenusList)
@@ -161,7 +163,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
                 }
             }
             UI_ActiveIndicator.transform.localPosition = new Vector3(defaultIndicatorPos.x, defaultIndicatorPos.y - (IndicatorHeight * menuSelection), defaultIndicatorPos.z);
-            AudioFeedbackSource.PlayOneShot(AudioclipMenuChange);
+            if (playAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuChange);
         }
         else
         {
@@ -169,5 +171,5 @@ public class PortableWorldMenu : UdonSharpBehaviour
         }
     }
 
-    private void _sendDebugError(string errorReported) => Debug.LogError("Reava_UwUtils:<color=red> <b>"+ errorReported + "</b></color>, please review <color=orange>References / Settings</color> on: " + gameObject + ".", gameObject);
+    private void _sendDebugError(string errorReported) => Debug.LogError("<color=white>Reava_UwUtils:<color=red> <b>" + errorReported + "</b></color>, please review <color=orange>References / Settings</color> on: " + gameObject + ".</color>", gameObject);
 }
