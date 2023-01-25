@@ -5,6 +5,15 @@ using VRC.Udon;
 using TMPro;
 using UnityEngine.UI;
 
+/*
+ ///////////////////////// //////////////////////////////////////////////////// /////////////////////////
+  THIS SCRIPT IS NOT MEANT TO BE EDITED UNLESS YOU KNOW EXACTLY WHAT YOU ARE DOING, PLEASE REFER TO DOCS
+
+                       Script by Reava_, helped by wonderful peeps @ Prefabs. 
+     Extra Thanks to Nestor for the general Udon help & Superbstingray for the Avatar Utility Script
+ ///////////////////////// //////////////////////////////////////////////////// /////////////////////////
+*/
+
 [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
 public class PortableWorldMenu : UdonSharpBehaviour
 {
@@ -17,7 +26,9 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [Tooltip("Resets to the default tab of the menu when the menu closes")]
     [SerializeField] private bool resetTabOnExit = false;
     [SerializeField] private int defaultMenuTab = 0;
-    [SerializeField] private GameObject[] MenusList;
+    private int maxMenuNum = 5;
+    [Tooltip("Max # of menus is 5, please refer to documentation on how to edit this value.")]
+    [SerializeField] private GameObject[] MenusList = new GameObject[5];
     [Space]
     [Header("References")]
     [SerializeField] private Image ProgressIndicator;
@@ -27,17 +38,24 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [SerializeField] private GameObject UIContainer;
     [SerializeField] private GameObject UI_ActiveIndicator;
     [SerializeField] private GameObject MainCanvas;
-    private Vector3 defaultIndicatorPos = new Vector3(0f, 13.75f, 0f);
-    private GameObject SelectedMenuCanvas;
-    private GameObject ListedMenuCanvas;
+    private Vector3 defaultIndicatorPos = new Vector3(0f, 13.75f, 0f); //This is the default position for the selector when menu 0 is selected
+    private float IndicatorHeight = 7f;
+    private bool isValidRefs = true;
     private bool state = false;
     private float currentHeld;
+    private GameObject SelectedMenuCanvas;
+    private GameObject ListedMenuCanvas;
     private float detectedScale = 1f;
 
     void Start()
     {
-        if (!ProgressIndicator || !popupIndicator || !CanvasTargetPosition || !UIContainer || !CanvasTargetRotation) _sendDebugError();
-        _DespawnMenu();
+        if (!ProgressIndicator || !popupIndicator || !CanvasTargetPosition || !UIContainer || !CanvasTargetRotation || MenusList.Length > maxMenuNum) _sendDebugError();
+        foreach(GameObject o in MenusList)
+        {
+            if(o) if (!o.GetComponent<Canvas>() || !o.GetComponent<BoxCollider>() || !o.GetComponent<GraphicRaycaster>()) isValidRefs = false;
+        }
+        if (!MainCanvas.GetComponent<Canvas>() || !MainCanvas.GetComponent<BoxCollider>() || !MainCanvas.GetComponent<GraphicRaycaster>()) isValidRefs = false;
+        if (!isValidRefs) { UIContainer.SetActive(false); _sendDebugError(); } else { _DespawnMenu(); }
         popupIndicator.SetActive(false);
     }
 
@@ -45,7 +63,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
     {
         if (player.isLocal)
         {
-            _DespawnMenu();
+            if (isValidRefs) _DespawnMenu();
             popupIndicator.SetActive(false);
         }
     }
@@ -53,11 +71,13 @@ public class PortableWorldMenu : UdonSharpBehaviour
     public void _scaleChange(float scale)
     {
         detectedScale = scale;
-        //do smth
+        //do smth to scale things properly
     }
 
     public void Update()
     {
+        if (!isValidRefs) return;
+        if (Input.GetKeyDown(KeyCode.E)) if (!state) _spawnMenu(); else _DespawnMenu();
         if (Input.GetAxisRaw("Oculus_CrossPlatform_SecondaryThumbstickVertical") < -0.95f || Input.GetKey(KeyCode.Keypad3))
         {
             if (currentHeld == 0 && !state)
@@ -79,10 +99,6 @@ public class PortableWorldMenu : UdonSharpBehaviour
             ProgressIndicator.fillAmount = 0f;
             popupIndicator.SetActive(false);
         }
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            if(!state) _spawnMenu(); else _DespawnMenu();
-        }
         if (Input.GetButton("Oculus_CrossPlatform_Button4") || Input.GetButton("Oculus_CrossPlatform_Button2") || Input.GetAxisRaw("Oculus_CrossPlatform_SecondaryThumbstickHorizontal") != 0 || Input.GetButton("Horizontal") || Input.GetButton("Vertical") || Input.GetAxisRaw("Oculus_CrossPlatform_SecondaryThumbstickVertical") > 0.95f)
         {
             _DespawnMenu();
@@ -91,6 +107,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
 
     public void _spawnMenu()
     {
+        if (!isValidRefs) return;
         state = true;
         if (resetTabOnExit) _ChangeMenuTo(defaultMenuTab);
         UIContainer.transform.SetPositionAndRotation(CanvasTargetPosition.transform.position, CanvasTargetRotation.transform.rotation);
@@ -102,6 +119,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
 
     public void _DespawnMenu()
     {
+        if (!isValidRefs) return;
         state = false;
         MainCanvas.GetComponent<Canvas>().enabled = false;
         MainCanvas.GetComponent<GraphicRaycaster>().enabled = false;
@@ -110,20 +128,25 @@ public class PortableWorldMenu : UdonSharpBehaviour
 
     public void _ChangeMenuTo(int menuSelection)
     {
+        if (!isValidRefs || menuSelection >= maxMenuNum) return;
         if (MenusList.Length != 0)
         {
             foreach (GameObject menu in MenusList)
             {
-                //menu.SetActive(false);
-                menu.GetComponent<Canvas>().enabled = false;
-                menu.GetComponent<GraphicRaycaster>().enabled = false;
-                menu.GetComponent<BoxCollider>().enabled = false;
+                if (menu)
+                {
+                    menu.GetComponent<Canvas>().enabled = false;
+                    menu.GetComponent<GraphicRaycaster>().enabled = false;
+                    menu.GetComponent<BoxCollider>().enabled = false;
+                }
             }
-            //MenusList[menuSelection].SetActive(true);
-            MenusList[menuSelection].GetComponent<Canvas>().enabled = true;
-            MenusList[menuSelection].GetComponent<GraphicRaycaster>().enabled = true;
-            MenusList[menuSelection].GetComponent<BoxCollider>().enabled = true;
-            UI_ActiveIndicator.transform.localPosition = new Vector3(defaultIndicatorPos.x, defaultIndicatorPos.y - (7 * menuSelection), defaultIndicatorPos.z);
+            if (MenusList[menuSelection])
+            {
+                MenusList[menuSelection].GetComponent<Canvas>().enabled = true;
+                MenusList[menuSelection].GetComponent<GraphicRaycaster>().enabled = true;
+                MenusList[menuSelection].GetComponent<BoxCollider>().enabled = true;
+            }
+            UI_ActiveIndicator.transform.localPosition = new Vector3(defaultIndicatorPos.x, defaultIndicatorPos.y - (IndicatorHeight * menuSelection), defaultIndicatorPos.z);
         }
         else
         {
@@ -131,5 +154,5 @@ public class PortableWorldMenu : UdonSharpBehaviour
         }
     }
 
-    private void _sendDebugError() => Debug.LogError("Reava_UwUtils:<color=red> <b>Invalid references</b></color>, please review <color=orange>references</color> on: " + gameObject + ".", gameObject);
+    private void _sendDebugError() => Debug.LogError("Reava_UwUtils:<color=red> <b>Invalid references or settings</b></color>, please review <color=orange>references</color> on: " + gameObject + ".", gameObject);
 }
