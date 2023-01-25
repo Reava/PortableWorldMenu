@@ -5209,6 +5209,9 @@ MonoBehaviour:
   UI_ActiveIndicator: {fileID: 328695441264313429}
   MainCanvas: {fileID: 8318993244566438009}
   AudioFeedbackSource: {fileID: 4878174641538816225}
+  AudioclipMenuOpen: {fileID: 8300000, guid: f5a59c8a33d68314d8290adfb22b539b, type: 3}
+  AudioclipMenuClose: {fileID: 8300000, guid: f5a59c8a33d68314d8290adfb22b539b, type: 3}
+  AudioclipMenuChange: {fileID: 8300000, guid: 26248e165a6c57143a117a3a69bbb515, type: 3}
 --- !u!114 &4619863416301628968
 MonoBehaviour:
   m_ObjectHideFlags: 0

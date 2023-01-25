@@ -38,7 +38,12 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [SerializeField] private GameObject UIContainer;
     [SerializeField] private GameObject UI_ActiveIndicator;
     [SerializeField] private GameObject MainCanvas;
+    [Space]
+    [Header("Audio")]
     [SerializeField] private AudioSource AudioFeedbackSource;
+    [SerializeField] private AudioClip AudioclipMenuOpen;
+    [SerializeField] private AudioClip AudioclipMenuClose;
+    [SerializeField] private AudioClip AudioclipMenuChange;
     private Vector3 defaultIndicatorPos = new Vector3(0f, 13.75f, 0f); //This is the default position for the selector when menu 0 is selected
     private float IndicatorHeight = 7f;
     private bool isValidRefs = true;
