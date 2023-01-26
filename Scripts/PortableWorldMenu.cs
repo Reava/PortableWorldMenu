@@ -19,12 +19,14 @@ public class PortableWorldMenu : UdonSharpBehaviour
 {
     [Space]
     [Header("Settings")]
+    public bool IsAudioFeedbackEnabled = true;
     [Range(0f, 5f)]
     [SerializeField] private float holdTimeSeconds = 1.5f;
     [Space]
     [Header("Menus stuff")]
     [Tooltip("Resets to the default tab of the menu when the menu closes")]
     public bool resetTabOnExit = false;
+    [Range(0, 4)]
     [SerializeField] private int defaultMenuTab = 0;
     private int maxMenuNum = 5;
     [Tooltip("Max # of menus is 5, please refer to documentation on how to edit this value.")]
@@ -40,7 +42,8 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [SerializeField] private GameObject MainCanvas;
     [Space]
     [Header("Audio")]
-    public bool playAudioFeedback = true;
+    [Tooltip("This is to enable/disable the audio section completely")]
+    [SerializeField] private bool useAudioFeedback = true;
     [SerializeField] private AudioSource AudioFeedbackSource;
     [SerializeField] private AudioClip AudioclipMenuOpen;
     [SerializeField] private AudioClip AudioclipMenuClose;
@@ -56,15 +59,22 @@ public class PortableWorldMenu : UdonSharpBehaviour
 
     void Start()
     {
-        if (!ProgressIndicator || !popupIndicator || !CanvasTargetPosition || !UIContainer || !CanvasTargetRotation || MenusList.Length > maxMenuNum) _sendDebugError("Missing Reference");
-        if(playAudioFeedback) if(!AudioclipMenuOpen || !AudioclipMenuClose || !AudioclipMenuChange) _sendDebugError("Missing Audio Clip/Source");
+        if (!ProgressIndicator || !popupIndicator || !CanvasTargetPosition || !UIContainer || !CanvasTargetRotation || !UI_ActiveIndicator || !MainCanvas) { _sendDebugError("Missing Main Reference(s)",59); isValidRefs = false; }
+        if (useAudioFeedback) if (!AudioclipMenuOpen || !AudioclipMenuClose || !AudioclipMenuChange) { _sendDebugError("Missing Audio Clip/Source",60);}
+        int itemp = 0;
         foreach (GameObject o in MenusList)
         {
-            if(o) if (!o.GetComponent<Canvas>() || !o.GetComponent<BoxCollider>() || !o.GetComponent<GraphicRaycaster>()) isValidRefs = false;
+            if (o)
+            {
+                if (!o.GetComponent<Canvas>() || !o.GetComponent<BoxCollider>() || !o.GetComponent<GraphicRaycaster>())
+                {
+                    _sendDebugError("Invalid Menu #" + itemp + " <color=white>('" + o.gameObject.name + "'),</color> it will be ignored", 68);
+                }
+            }
+            itemp += 1;
         }
-        if (!MainCanvas.GetComponent<Canvas>() || !MainCanvas.GetComponent<BoxCollider>() || !MainCanvas.GetComponent<GraphicRaycaster>()) isValidRefs = false;
-        if (!isValidRefs) { UIContainer.SetActive(false); _sendDebugError("Invalid References"); } else { _DespawnMenu(); }
-        popupIndicator.SetActive(false);
+        if (!MainCanvas.GetComponent<Canvas>() || !MainCanvas.GetComponent<BoxCollider>() || !MainCanvas.GetComponent<GraphicRaycaster>()) { _sendDebugError("Missing component on Main Canvas",73); isValidRefs = false; }
+        if (!isValidRefs) { UIContainer.SetActive(false); _sendDebugError("Invalid setup, disabling Menu now..", 74); _disableSelf(); } else { _DespawnMenu(); popupIndicator.SetActive(false); }
     }
 
     public void OnPlayerRespawn(VRCPlayerApi player)
@@ -117,13 +127,13 @@ public class PortableWorldMenu : UdonSharpBehaviour
     {
         if (!isValidRefs) return;
         state = true;
-        if (resetTabOnExit) _ChangeMenuTo(defaultMenuTab);
+        if (resetTabOnExit && defaultMenuTab <= 4) _ChangeMenuTo(defaultMenuTab);
         UIContainer.transform.SetPositionAndRotation(CanvasTargetPosition.transform.position, CanvasTargetRotation.transform.rotation);
         popupIndicator.SetActive(false);
         MainCanvas.GetComponent<Canvas>().enabled = true;
         MainCanvas.GetComponent<GraphicRaycaster>().enabled = true;
         MainCanvas.GetComponent<BoxCollider>().enabled = true;
-        if (playAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuOpen);
+        if (IsAudioFeedbackEnabled && useAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuOpen);
     }
 
     public void _DespawnMenu()
@@ -133,7 +143,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
         MainCanvas.GetComponent<Canvas>().enabled = false;
         MainCanvas.GetComponent<GraphicRaycaster>().enabled = false;
         MainCanvas.GetComponent<BoxCollider>().enabled = false;
-        if (playAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuClose);
+        if (IsAudioFeedbackEnabled && useAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuClose);
     }
 
     public void _ChangeMenuTo(int menuSelection)
@@ -141,35 +151,30 @@ public class PortableWorldMenu : UdonSharpBehaviour
         if (!isValidRefs || menuSelection >= maxMenuNum) return;
         if (MenusList.Length != 0)
         {
-
-            if (MenusList[menuSelection])
+            foreach (GameObject menu in MenusList)
+            {
+                if (menu && menu.GetComponent<Canvas>())
+                {
+                    menu.GetComponent<GraphicRaycaster>().enabled = false;
+                    menu.GetComponent<Canvas>().enabled = false;
+                    menu.GetComponent<BoxCollider>().enabled = false;
+                }
+            }
+            if (MenusList[menuSelection] && MenusList[menuSelection].GetComponent<Canvas>())
             {
                 MenusList[menuSelection].GetComponent<Canvas>().enabled = true;
                 MenusList[menuSelection].GetComponent<GraphicRaycaster>().enabled = true;
                 MenusList[menuSelection].GetComponent<BoxCollider>().enabled = true;
             }
-            else
-            {
-                _sendDebugError("Invalid Menu Selected");
-                return;
-            }
-            foreach (GameObject menu in MenusList)
-            {
-                if (menu)
-                {
-                    menu.GetComponent<Canvas>().enabled = false;
-                    menu.GetComponent<GraphicRaycaster>().enabled = false;
-                    menu.GetComponent<BoxCollider>().enabled = false;
-                }
-            }
             UI_ActiveIndicator.transform.localPosition = new Vector3(defaultIndicatorPos.x, defaultIndicatorPos.y - (IndicatorHeight * menuSelection), defaultIndicatorPos.z);
-            if (playAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuChange);
+            if (IsAudioFeedbackEnabled && useAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuChange);
         }
         else
         {
-            _sendDebugError("No Menus Found");
+            _sendDebugError("No Menus Found", 166);
         }
     }
 
-    private void _sendDebugError(string errorReported) => Debug.LogError("<color=white>Reava_UwUtils:<color=red> <b>" + errorReported + "</b></color>, please review <color=orange>References / Settings</color> on: " + gameObject + ".</color>", gameObject);
+    private void _sendDebugError(string errorReported, int lineErrored) => Debug.LogError("<color=white>#"+lineErrored+" | Reava_UwUtils:<color=red> <b>" + errorReported + "</b></color>, please review <color=orange>References <color=white>/</color> Settings</color> on: " + gameObject.name + ".</color>", gameObject);
+    private void _disableSelf() { this.gameObject.SetActive(false); } //Shuts the entire system off to prevent things from running for nothing
 }
