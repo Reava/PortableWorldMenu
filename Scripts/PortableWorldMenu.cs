@@ -33,7 +33,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [Header("References")]
     [SerializeField] private Image ProgressIndicator;
     [SerializeField] private GameObject popupIndicator;
-    [SerializeField] private GameObject CanvasTargetPosition;
+    [SerializeField] private GameObject HandPosition;
     [SerializeField] private GameObject HeadPosition;
     [SerializeField] private GameObject UI_ActiveIndicator;
     [SerializeField] private GameObject MainCanvas;
@@ -64,7 +64,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
 
     void Start()
     {
-        if (!ProgressIndicator || !popupIndicator || !CanvasTargetPosition || !HeadPosition || !UI_ActiveIndicator || !MainCanvas) { _sendDebugError("Missing Main Reference(s)",64); isValidRefs = false; }
+        if (!ProgressIndicator || !popupIndicator || !HandPosition || !HeadPosition || !UI_ActiveIndicator || !MainCanvas) { _sendDebugError("Missing Main Reference(s)",64); isValidRefs = false; }
         if (useAudioFeedback) if (!AudioclipMenuOpen || !AudioclipMenuClose || !AudioclipMenuChange) { _sendDebugError("Missing Audio Clip/Source",65);}
         int itemp = 0;
         foreach (GameObject o in MenusList)
@@ -108,7 +108,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
         {
             if (currentHeld == 0 && !state)
             {
-                popupIndicator.transform.SetPositionAndRotation(CanvasTargetPosition.transform.position, Quaternion.Euler(new Vector3(HeadPosition.transform.rotation.x, HeadPosition.transform.rotation.y, 0f)));
+                popupIndicator.transform.SetPositionAndRotation(HandPosition.transform.position, Quaternion.Euler(new Vector3(HeadPosition.transform.rotation.x, HeadPosition.transform.rotation.y, 0f)));
                 popupIndicator.SetActive(true);
             }
             currentHeld += Time.deltaTime;
@@ -136,7 +136,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
         if (!isValidRefs) return;
         state = true;
         if (resetTabOnExit && defaultMenuTab <= 4) _ChangeMenuTo(defaultMenuTab);
-        MainCanvas.transform.SetPositionAndRotation((CanvasTargetPosition.transform.position + CanvasOffset), Quaternion.Euler(new Vector3(HeadPosition.transform.rotation.x, HeadPosition.transform.rotation.y, 0f)));
+        MainCanvas.transform.SetPositionAndRotation((HandPosition.transform.position + CanvasOffset), Quaternion.Euler(new Vector3(HeadPosition.transform.rotation.x, HeadPosition.transform.rotation.y, 0f)));
         popupIndicator.SetActive(false);
         MainCanvas.GetComponent<Canvas>().enabled = true;
         MainCanvas.GetComponent<GraphicRaycaster>().enabled = true;
