@@ -56,7 +56,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [Tooltip("Canvas Offset added to the transform of the hand target.")]
     [SerializeField] private Vector3 CanvasOffset = new Vector3(0f, 0f, 0f);
     [Tooltip("Default Scale of the UI. (Warning: scales to the scale detected of the avatar)")]
-    [Range(0.1f, 6f)]
+    [Range(0.1f, 2.5f)]
     [SerializeField] private float SystemScale = 1f;
     private bool isValidRefs = true;
     private bool state = false;
@@ -106,7 +106,17 @@ public class PortableWorldMenu : UdonSharpBehaviour
     public void Update()
     {
         if (!isValidRefs) return;
-        if (Input.GetKeyDown(KeybindDesktop)) Debug.Log("desktop key pressed PWMReava_"); if (!state) _spawnMenu(false); else _DespawnMenu();
+        if (Input.GetKeyDown(KeybindDesktop))
+        {
+            if (!state)
+            {
+                _spawnMenu(false);
+            }
+            else
+            {
+                _DespawnMenu();
+            }
+        }
         if (Input.GetAxisRaw("Oculus_CrossPlatform_SecondaryThumbstickVertical") < -0.95f || Input.GetKey(KeyCode.Keypad3))
         {
             if (currentHeld == 0 && !state)

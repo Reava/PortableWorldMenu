@@ -5056,8 +5056,8 @@ MonoBehaviour:
   - {fileID: 626185507477880060}
   ProgressIndicator: {fileID: 5422354769544972138}
   popupIndicator: {fileID: 4630254772950741585}
-  HandPosition: {fileID: 6776278886220755362}
-  HeadPosition: {fileID: 3252500274954675595}
+  HandPosition: {fileID: 5143363986670354774}
+  HeadPosition: {fileID: 3319557143818410376}
   DesktopTargetPosition: {fileID: 656187355036965559}
   UI_ActiveIndicator: {fileID: 328695441264313429}
   MainCanvas: {fileID: 8318993244566438009}
@@ -5067,8 +5067,8 @@ MonoBehaviour:
   AudioclipMenuChange: {fileID: 8300000, guid: 26248e165a6c57143a117a3a69bbb515, type: 3}
   defaultIndicatorPos: {x: 0, y: 13.75, z: 0}
   IndicatorOffset: {x: 0, y: 7, z: 0}
-  CanvasOffset: {x: 0, y: 0.04, z: 0.12}
-  SystemScale: 1.1
+  CanvasOffset: {x: 0, y: 0.08, z: -0.18}
+  SystemScale: 1.25
 --- !u!114 &5903945708890123295
 MonoBehaviour:
   m_ObjectHideFlags: 0
