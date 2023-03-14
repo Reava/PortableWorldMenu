@@ -110,7 +110,8 @@ public class PortableWorldMenu : UdonSharpBehaviour
         {
             if (currentHeld == 0 && !state)
             {
-                popupIndicator.transform.SetPositionAndRotation(HandPosition.transform.position + CanvasOffset, Quaternion.Euler(new Vector3(HeadPosition.transform.rotation.x, 0f, HeadPosition.transform.rotation.z)));
+                popupIndicator.transform.position = HandPosition.transform.position;
+                popupIndicator.transform.eulerAngles = new Vector3(HeadPosition.transform.eulerAngles.x, 0f, HeadPosition.transform.eulerAngles.z);
                 popupIndicator.SetActive(true);
             }
             currentHeld += Time.deltaTime;
@@ -139,7 +140,8 @@ public class PortableWorldMenu : UdonSharpBehaviour
         state = true;
         if (resetTabOnExit && defaultMenuTab <= 4) _ChangeMenuTo(defaultMenuTab);
         if (isVR){
-            MainCanvas.transform.SetPositionAndRotation((HandPosition.transform.position + CanvasOffset), Quaternion.Euler(HeadPosition.transform.rotation.x, 0f, HeadPosition.transform.rotation.z));
+            MainCanvas.transform.position = HandPosition.transform.position;
+            MainCanvas.transform.eulerAngles = new Vector3(HeadPosition.transform.eulerAngles.x, 0f, HeadPosition.transform.eulerAngles.z);
         }
         else
         {
@@ -149,9 +151,9 @@ public class PortableWorldMenu : UdonSharpBehaviour
         MainCanvas.GetComponent<Canvas>().enabled = true;
         MainCanvas.GetComponent<GraphicRaycaster>().enabled = true;
         MainCanvas.GetComponent<BoxCollider>().enabled = true;
-        if (MenusList[SelectedMenu] && MenusList[SelectedMenu].GetComponent<GraphicRaycaster>())
+        if (MenusList[SelectedMenu] && MenusList[SelectedMenu].GetComponent<Canvas>())
         {
-            MenusList[SelectedMenu].GetComponent<GraphicRaycaster>().enabled = true;
+            MenusList[SelectedMenu].GetComponent<Canvas>().enabled = true;
         }
         if (useAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuOpen);
     }
@@ -163,9 +165,9 @@ public class PortableWorldMenu : UdonSharpBehaviour
         MainCanvas.GetComponent<Canvas>().enabled = false;
         MainCanvas.GetComponent<GraphicRaycaster>().enabled = false;
         MainCanvas.GetComponent<BoxCollider>().enabled = false;
-        if (MenusList[SelectedMenu] && MenusList[SelectedMenu].GetComponent<GraphicRaycaster>())
+        if (MenusList[SelectedMenu] && MenusList[SelectedMenu].GetComponent<Canvas>())
         {
-            MenusList[SelectedMenu].GetComponent<GraphicRaycaster>().enabled = false;
+            MenusList[SelectedMenu].GetComponent<Canvas>().enabled = false;
         }
         if (useAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuClose);
     }
