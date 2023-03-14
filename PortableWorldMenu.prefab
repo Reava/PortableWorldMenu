@@ -5113,10 +5113,9 @@ MonoBehaviour:
   AudioclipMenuClose: {fileID: 8300000, guid: f5a59c8a33d68314d8290adfb22b539b, type: 3}
   AudioclipMenuChange: {fileID: 8300000, guid: 26248e165a6c57143a117a3a69bbb515, type: 3}
   defaultIndicatorPos: {x: 0, y: 13.75, z: 0}
-  IndicatorHeightAndWidth: 7
-  CanvasOffset: {x: 0, y: 0.08, z: 0.12}
-  SystemScale: 1.8
-  MenuDirection: 0
+  IndicatorOffset: {x: 0, y: 7, z: 0}
+  CanvasOffset: {x: 0, y: 0.04, z: 0.12}
+  SystemScale: 1.1
 --- !u!114 &5903945708890123295
 MonoBehaviour:
   m_ObjectHideFlags: 0

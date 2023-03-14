@@ -57,8 +57,6 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [Tooltip("Default Scale of the UI. (Warning: scales to the scale detected of the avatar)")]
     [Range(0.1f, 6f)]
     [SerializeField] private float SystemScale = 1f;
-    [Tooltip("False = Vertical, True = Horizontal, top to bottom, left to right")]
-    [SerializeField] private bool MenuDirection = false;
     private bool isValidRefs = true;
     private bool state = false;
     private float currentHeld;
@@ -141,7 +139,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
         state = true;
         if (resetTabOnExit && defaultMenuTab <= 4) _ChangeMenuTo(defaultMenuTab);
         if (isVR){
-            MainCanvas.transform.SetPositionAndRotation((HandPosition.transform.position + CanvasOffset), Quaternion.Euler(HeadPosition.transform.rotation.x, HeadPosition.transform.rotation.y, 0f));
+            MainCanvas.transform.SetPositionAndRotation((HandPosition.transform.position + CanvasOffset), Quaternion.Euler(HeadPosition.transform.rotation.x, 0f, HeadPosition.transform.rotation.z));
         }
         else
         {
