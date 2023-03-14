@@ -60,7 +60,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
     private bool isValidRefs = true;
     private bool state = false;
     private float currentHeld;
-    private GameObject SelectedMenuCanvas;
+    private int SelectedMenu = 0;
     private GameObject ListedMenuCanvas;
     private Vector3 detectedScale = new Vector3(1f, 1f, 1f);
 
@@ -149,6 +149,10 @@ public class PortableWorldMenu : UdonSharpBehaviour
         MainCanvas.GetComponent<Canvas>().enabled = true;
         MainCanvas.GetComponent<GraphicRaycaster>().enabled = true;
         MainCanvas.GetComponent<BoxCollider>().enabled = true;
+        if (MenusList[SelectedMenu] && MenusList[SelectedMenu].GetComponent<GraphicRaycaster>())
+        {
+            MenusList[SelectedMenu].GetComponent<GraphicRaycaster>().enabled = true;
+        }
         if (useAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuOpen);
     }
 
@@ -159,11 +163,16 @@ public class PortableWorldMenu : UdonSharpBehaviour
         MainCanvas.GetComponent<Canvas>().enabled = false;
         MainCanvas.GetComponent<GraphicRaycaster>().enabled = false;
         MainCanvas.GetComponent<BoxCollider>().enabled = false;
+        if (MenusList[SelectedMenu] && MenusList[SelectedMenu].GetComponent<GraphicRaycaster>())
+        {
+            MenusList[SelectedMenu].GetComponent<GraphicRaycaster>().enabled = false;
+        }
         if (useAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuClose);
     }
 
     public void _ChangeMenuTo(int menuSelection)
     {
+        SelectedMenu = menuSelection;
         if (!isValidRefs || menuSelection >= maxMenuNum) return;
         if (MenusList.Length != 0)
         {
