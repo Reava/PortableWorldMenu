@@ -19,13 +19,11 @@ public class PortableWorldMenu : UdonSharpBehaviour
 {
     [Space]
     [Header("Settings")]
-    public bool IsAudioFeedbackEnabled = true;
-    [Range(0f, 5f)]
-    [SerializeField] private float holdTimeSeconds = 1.5f;
-    [Space]
-    [Header("Menus stuff")]
+    [SerializeField] private bool useAudioFeedback = true;
     [Tooltip("Resets to the default tab of the menu when the menu closes")]
     public bool resetTabOnExit = false;
+    [Range(0f, 5f)]
+    [SerializeField] private float holdTimeSeconds = 1.5f;
     [Range(0, 4)]
     [SerializeField] private int defaultMenuTab = 0;
     private int maxMenuNum = 5;
@@ -36,31 +34,38 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [SerializeField] private Image ProgressIndicator;
     [SerializeField] private GameObject popupIndicator;
     [SerializeField] private GameObject CanvasTargetPosition;
-    [SerializeField] private GameObject CanvasTargetRotation;
-    [SerializeField] private GameObject UIContainer;
+    [SerializeField] private GameObject HeadPosition;
     [SerializeField] private GameObject UI_ActiveIndicator;
     [SerializeField] private GameObject MainCanvas;
     [Space]
-    [Header("Audio")]
-    [Tooltip("This is to enable/disable the audio section completely")]
-    [SerializeField] private bool useAudioFeedback = true;
+    [Header("Audio references")]
     [SerializeField] private AudioSource AudioFeedbackSource;
     [SerializeField] private AudioClip AudioclipMenuOpen;
     [SerializeField] private AudioClip AudioclipMenuClose;
     [SerializeField] private AudioClip AudioclipMenuChange;
-    private Vector3 defaultIndicatorPos = new Vector3(0f, 13.75f, 0f); //This is the default position for the selector when menu 0 is selected
-    private float IndicatorHeight = 7f;
+    [Space]
+    [Header("Advanced settings, only edit if you know what you're doing!")]
+    [SerializeField] private Vector3 defaultIndicatorPos = new Vector3(0f, 13.75f, 0f); //This is the default position for the selector when menu 0 is selected
+    [Tooltip("Indicator must be square.")]
+    [SerializeField] private float IndicatorHeightAndWidth = 7f;
+    [Tooltip("Canvas Offset added to the transform of the hand target.")]
+    [SerializeField] private Vector3 CanvasOffset = new Vector3(0f, 0f, 0f);
+    [Tooltip("Default Scale of the UI. (Warning: scales to the scale detected of the avatar)")]
+    [Range(0.1f, 6f)]
+    [SerializeField] private float SystemScale = 1f;
+    [Tooltip("False = Vertical, True = Horizontal, top to bottom, left to right")]
+    [SerializeField] private bool MenuDirection = false;
     private bool isValidRefs = true;
     private bool state = false;
     private float currentHeld;
     private GameObject SelectedMenuCanvas;
     private GameObject ListedMenuCanvas;
-    private float detectedScale = 1f;
+    private Vector3 detectedScale = new Vector3(1f, 1f, 1f);
 
     void Start()
     {
-        if (!ProgressIndicator || !popupIndicator || !CanvasTargetPosition || !UIContainer || !CanvasTargetRotation || !UI_ActiveIndicator || !MainCanvas) { _sendDebugError("Missing Main Reference(s)",59); isValidRefs = false; }
-        if (useAudioFeedback) if (!AudioclipMenuOpen || !AudioclipMenuClose || !AudioclipMenuChange) { _sendDebugError("Missing Audio Clip/Source",60);}
+        if (!ProgressIndicator || !popupIndicator || !CanvasTargetPosition || !HeadPosition || !UI_ActiveIndicator || !MainCanvas) { _sendDebugError("Missing Main Reference(s)",64); isValidRefs = false; }
+        if (useAudioFeedback) if (!AudioclipMenuOpen || !AudioclipMenuClose || !AudioclipMenuChange) { _sendDebugError("Missing Audio Clip/Source",65);}
         int itemp = 0;
         foreach (GameObject o in MenusList)
         {
@@ -74,7 +79,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
             itemp += 1;
         }
         if (!MainCanvas.GetComponent<Canvas>() || !MainCanvas.GetComponent<BoxCollider>() || !MainCanvas.GetComponent<GraphicRaycaster>()) { _sendDebugError("Missing component on Main Canvas",73); isValidRefs = false; }
-        if (!isValidRefs) { UIContainer.SetActive(false); _sendDebugError("Invalid setup, disabling Menu now..", 74); _disableSelf(); } else { _DespawnMenu(); popupIndicator.SetActive(false); }
+        if (!isValidRefs) { MainCanvas.SetActive(false); _sendDebugError("Invalid setup, disabling Menu now..", 74); _disableSelf(); } else { _DespawnMenu(); popupIndicator.SetActive(false); }
     }
 
     public void OnPlayerRespawn(VRCPlayerApi player)
@@ -88,7 +93,10 @@ public class PortableWorldMenu : UdonSharpBehaviour
 
     public void _scaleChange(float scale)
     {
-        detectedScale = scale;
+        detectedScale = new Vector3(scale, scale, scale);
+        CanvasOffset = new Vector3(CanvasOffset.x * scale, CanvasOffset.y * scale, CanvasOffset.z * scale);
+        popupIndicator.transform.localScale = detectedScale * SystemScale;
+        MainCanvas.transform.localScale = detectedScale * SystemScale;
         //do smth to scale things properly
     }
 
@@ -100,7 +108,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
         {
             if (currentHeld == 0 && !state)
             {
-                popupIndicator.transform.SetPositionAndRotation(CanvasTargetPosition.transform.position, CanvasTargetRotation.transform.rotation);
+                popupIndicator.transform.SetPositionAndRotation(CanvasTargetPosition.transform.position, Quaternion.Euler(new Vector3(HeadPosition.transform.rotation.x, HeadPosition.transform.rotation.y, 0f)));
                 popupIndicator.SetActive(true);
             }
             currentHeld += Time.deltaTime;
@@ -128,12 +136,12 @@ public class PortableWorldMenu : UdonSharpBehaviour
         if (!isValidRefs) return;
         state = true;
         if (resetTabOnExit && defaultMenuTab <= 4) _ChangeMenuTo(defaultMenuTab);
-        UIContainer.transform.SetPositionAndRotation(CanvasTargetPosition.transform.position, CanvasTargetRotation.transform.rotation);
+        MainCanvas.transform.SetPositionAndRotation((CanvasTargetPosition.transform.position + CanvasOffset), Quaternion.Euler(new Vector3(HeadPosition.transform.rotation.x, HeadPosition.transform.rotation.y, 0f)));
         popupIndicator.SetActive(false);
         MainCanvas.GetComponent<Canvas>().enabled = true;
         MainCanvas.GetComponent<GraphicRaycaster>().enabled = true;
         MainCanvas.GetComponent<BoxCollider>().enabled = true;
-        if (IsAudioFeedbackEnabled && useAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuOpen);
+        if (useAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuOpen);
     }
 
     public void _DespawnMenu()
@@ -143,7 +151,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
         MainCanvas.GetComponent<Canvas>().enabled = false;
         MainCanvas.GetComponent<GraphicRaycaster>().enabled = false;
         MainCanvas.GetComponent<BoxCollider>().enabled = false;
-        if (IsAudioFeedbackEnabled && useAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuClose);
+        if (useAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuClose);
     }
 
     public void _ChangeMenuTo(int menuSelection)
@@ -166,8 +174,15 @@ public class PortableWorldMenu : UdonSharpBehaviour
                 MenusList[menuSelection].GetComponent<GraphicRaycaster>().enabled = true;
                 MenusList[menuSelection].GetComponent<BoxCollider>().enabled = true;
             }
-            UI_ActiveIndicator.transform.localPosition = new Vector3(defaultIndicatorPos.x, defaultIndicatorPos.y - (IndicatorHeight * menuSelection), defaultIndicatorPos.z);
-            if (IsAudioFeedbackEnabled && useAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuChange);
+            if (!MenuDirection)
+            {
+                UI_ActiveIndicator.transform.localPosition = new Vector3(defaultIndicatorPos.x, defaultIndicatorPos.y - (IndicatorHeightAndWidth * menuSelection), defaultIndicatorPos.z);
+            }
+            else
+            {
+                UI_ActiveIndicator.transform.localPosition = new Vector3(defaultIndicatorPos.x + (IndicatorHeightAndWidth * menuSelection), defaultIndicatorPos.y, defaultIndicatorPos.z);
+            }
+            if (useAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuChange);
         }
         else
         {

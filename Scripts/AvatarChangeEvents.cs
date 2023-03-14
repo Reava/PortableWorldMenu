@@ -33,5 +33,13 @@ namespace Superbstingray
 			transform.parent.GetChild(1).localPosition = new Vector3(0, transform.localScale.y / 2F, 0);
 			PortableWorldMenuSystem._scaleChange(CameraScale);
 		}
+
+		public void OnPlayerRespawn(VRCPlayerApi player)
+		{
+			if (player.isLocal)
+			{
+				_AvatarChangeEvent();
+			}
+		}
 	}
 }

@@ -523,7 +523,7 @@ GameObject:
   - component: {fileID: 5432442840547592674}
   - component: {fileID: 4122136786331350236}
   m_Layer: 0
-  m_Name: TabActive
+  m_Name: Indicator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -921,7 +921,7 @@ MonoBehaviour:
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 5578235622992128387}
   portableMenuSystem: {fileID: 89679303961973284}
-  menu: 3
+  menu: 2
 --- !u!114 &5578235622992128387
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -958,7 +958,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4302098434760852103}
   m_Layer: 0
-  m_Name: PositionsOffsets
+  m_Name: Transforms
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2476,7 +2476,7 @@ GameObject:
   - component: {fileID: 3673672251889333584}
   - component: {fileID: 3492882164077253799}
   m_Layer: 0
-  m_Name: CanvasRotation
+  m_Name: HeadPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2837,7 +2837,7 @@ MonoBehaviour:
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 2040939029645053288}
   portableMenuSystem: {fileID: 89679303961973284}
-  menu: 5
+  menu: 4
 --- !u!114 &2040939029645053288
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3050,7 +3050,7 @@ MonoBehaviour:
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 1521861420465593851}
   portableMenuSystem: {fileID: 89679303961973284}
-  menu: 4
+  menu: 3
 --- !u!114 &1521861420465593851
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3289,7 +3289,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4127234617403120682}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0773, y: -0.0962, z: -0.0468}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 549009687729428699}
@@ -4816,7 +4816,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6898048049700488412}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.0773, y: 0.0962, z: 0.0468}
+  m_LocalPosition: {x: 0, y: 0.0922, z: 0.0546}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1220353722626002565}
@@ -5161,9 +5161,9 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 5903945708890123295}
-  IsAudioFeedbackEnabled: 1
-  holdTimeSeconds: 1.5
+  useAudioFeedback: 1
   resetTabOnExit: 0
+  holdTimeSeconds: 0.5
   defaultMenuTab: 0
   MenusList:
   - {fileID: 3961818337923840212}
@@ -5174,15 +5174,19 @@ MonoBehaviour:
   ProgressIndicator: {fileID: 5422354769544972138}
   popupIndicator: {fileID: 4630254772950741585}
   CanvasTargetPosition: {fileID: 6898048049700488412}
-  CanvasTargetRotation: {fileID: 3252500274954675595}
+  HeadPosition: {fileID: 3252500274954675595}
   UIContainer: {fileID: 3634419256957256792}
   UI_ActiveIndicator: {fileID: 328695441264313429}
   MainCanvas: {fileID: 8318993244566438009}
-  useAudioFeedback: 1
   AudioFeedbackSource: {fileID: 4878174641538816225}
   AudioclipMenuOpen: {fileID: 8300000, guid: f5a59c8a33d68314d8290adfb22b539b, type: 3}
   AudioclipMenuClose: {fileID: 8300000, guid: f5a59c8a33d68314d8290adfb22b539b, type: 3}
   AudioclipMenuChange: {fileID: 8300000, guid: 26248e165a6c57143a117a3a69bbb515, type: 3}
+  defaultIndicatorPos: {x: 0, y: 13.75, z: 0}
+  IndicatorHeightAndWidth: 7
+  CanvasOffset: {x: 0, y: 0, z: 0}
+  SystemScale: 1
+  MenuDirection: 0
 --- !u!114 &5903945708890123295
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5409,7 +5413,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8318993244566438009}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 2
   m_Camera: {fileID: 0}
@@ -5442,7 +5446,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8318993244566438009}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
   m_Name: 
@@ -5491,7 +5495,7 @@ BoxCollider:
   m_GameObject: {fileID: 8318993244566438009}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 75, y: 42.5, z: 0}
   m_Center: {x: 0, y: 1.25, z: 0}
