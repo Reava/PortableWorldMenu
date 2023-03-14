@@ -19,6 +19,8 @@ public class PortableWorldMenu : UdonSharpBehaviour
 {
     [Space]
     [Header("Settings")]
+    [Tooltip("Keybind for desktop users")]
+    [SerializeField] private KeyCode KeybindDesktop = KeyCode.E;
     [SerializeField] private bool useAudioFeedback = true;
     [Tooltip("Resets to the default tab of the menu when the menu closes")]
     public bool resetTabOnExit = false;
@@ -35,6 +37,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [SerializeField] private GameObject popupIndicator;
     [SerializeField] private GameObject HandPosition;
     [SerializeField] private GameObject HeadPosition;
+    [SerializeField] private GameObject DesktopTargetPosition;
     [SerializeField] private GameObject UI_ActiveIndicator;
     [SerializeField] private GameObject MainCanvas;
     [Space]
@@ -45,9 +48,10 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [SerializeField] private AudioClip AudioclipMenuChange;
     [Space]
     [Header("Advanced settings, only edit if you know what you're doing!")]
+    [Tooltip("This is the default position for the selector when menu 0 is selected")]
     [SerializeField] private Vector3 defaultIndicatorPos = new Vector3(0f, 13.75f, 0f); //This is the default position for the selector when menu 0 is selected
-    [Tooltip("Indicator must be square.")]
-    [SerializeField] private float IndicatorHeightAndWidth = 7f;
+    [Tooltip("Indicator offset substracted to the default position, multiplied by menu selection.")]
+    [SerializeField] private Vector3 IndicatorOffset = new Vector3(0f, 7f, 0f);
     [Tooltip("Canvas Offset added to the transform of the hand target.")]
     [SerializeField] private Vector3 CanvasOffset = new Vector3(0f, 0f, 0f);
     [Tooltip("Default Scale of the UI. (Warning: scales to the scale detected of the avatar)")]
@@ -93,28 +97,28 @@ public class PortableWorldMenu : UdonSharpBehaviour
 
     public void _scaleChange(float scale)
     {
-        detectedScale = new Vector3(scale, scale, scale);
+        Debug.LogWarning("PWM: Scale change detected:" + scale + " - Object:");
         CanvasOffset = new Vector3(CanvasOffset.x * scale, CanvasOffset.y * scale, CanvasOffset.z * scale);
-        popupIndicator.transform.localScale = detectedScale * SystemScale;
-        MainCanvas.transform.localScale = detectedScale * SystemScale;
-        //do smth to scale things properly
+        popupIndicator.transform.localScale = popupIndicator.transform.localScale  * (scale * SystemScale);
+        MainCanvas.transform.localScale = MainCanvas.transform.localScale * (scale * SystemScale);
+        DesktopTargetPosition.transform.localPosition = new Vector3(0f, 0f, 0.16f * scale);
     }
 
     public void Update()
     {
         if (!isValidRefs) return;
-        if (Input.GetKeyDown(KeyCode.E)) if (!state) _spawnMenu(); else _DespawnMenu();
+        if (Input.GetKeyDown(KeybindDesktop)) if (!state) _spawnMenu(false); else _DespawnMenu();
         if (Input.GetAxisRaw("Oculus_CrossPlatform_SecondaryThumbstickVertical") < -0.95f || Input.GetKey(KeyCode.Keypad3))
         {
             if (currentHeld == 0 && !state)
             {
-                popupIndicator.transform.SetPositionAndRotation(HandPosition.transform.position, Quaternion.Euler(new Vector3(HeadPosition.transform.rotation.x, HeadPosition.transform.rotation.y, 0f)));
+                popupIndicator.transform.SetPositionAndRotation(HandPosition.transform.position + CanvasOffset, Quaternion.Euler(new Vector3(HeadPosition.transform.rotation.x, 0f, HeadPosition.transform.rotation.z)));
                 popupIndicator.SetActive(true);
             }
             currentHeld += Time.deltaTime;
             if (currentHeld > holdTimeSeconds)
             {
-                if (!state) _spawnMenu();
+                if (!state) _spawnMenu(true);
                 currentHeld = 0f;
             }
             ProgressIndicator.fillAmount = currentHeld / holdTimeSeconds;
@@ -131,12 +135,18 @@ public class PortableWorldMenu : UdonSharpBehaviour
         }
     }
 
-    public void _spawnMenu()
+    public void _spawnMenu(bool isVR)
     {
         if (!isValidRefs) return;
         state = true;
         if (resetTabOnExit && defaultMenuTab <= 4) _ChangeMenuTo(defaultMenuTab);
-        MainCanvas.transform.SetPositionAndRotation((HandPosition.transform.position + CanvasOffset), Quaternion.Euler(new Vector3(HeadPosition.transform.rotation.x, HeadPosition.transform.rotation.y, 0f)));
+        if (isVR){
+            MainCanvas.transform.SetPositionAndRotation((HandPosition.transform.position + CanvasOffset), Quaternion.Euler(HeadPosition.transform.rotation.x, HeadPosition.transform.rotation.y, 0f));
+        }
+        else
+        {
+            MainCanvas.transform.SetPositionAndRotation(DesktopTargetPosition.transform.position, HeadPosition.transform.rotation);
+        }
         popupIndicator.SetActive(false);
         MainCanvas.GetComponent<Canvas>().enabled = true;
         MainCanvas.GetComponent<GraphicRaycaster>().enabled = true;
@@ -174,14 +184,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
                 MenusList[menuSelection].GetComponent<GraphicRaycaster>().enabled = true;
                 MenusList[menuSelection].GetComponent<BoxCollider>().enabled = true;
             }
-            if (!MenuDirection)
-            {
-                UI_ActiveIndicator.transform.localPosition = new Vector3(defaultIndicatorPos.x, defaultIndicatorPos.y - (IndicatorHeightAndWidth * menuSelection), defaultIndicatorPos.z);
-            }
-            else
-            {
-                UI_ActiveIndicator.transform.localPosition = new Vector3(defaultIndicatorPos.x + (IndicatorHeightAndWidth * menuSelection), defaultIndicatorPos.y, defaultIndicatorPos.z);
-            }
+            UI_ActiveIndicator.transform.localPosition = new Vector3(defaultIndicatorPos.x - (IndicatorOffset.x * menuSelection), defaultIndicatorPos.y - (IndicatorOffset.y * menuSelection), defaultIndicatorPos.z - (IndicatorOffset.z * menuSelection));
             if (useAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuChange);
         }
         else
