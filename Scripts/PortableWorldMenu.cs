@@ -4,6 +4,7 @@ using VRC.SDKBase;
 using VRC.Udon;
 using TMPro;
 using UnityEngine.UI;
+using VRC.Udon.Common;
 
 /*
  ///////////////////////// //////////////////////////////////////////////////// /////////////////////////
@@ -35,8 +36,8 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [Header("References")]
     [SerializeField] private Image ProgressIndicator;
     [SerializeField] private GameObject popupIndicator;
-    [SerializeField] private GameObject HandPosition;
-    [SerializeField] private GameObject HeadPosition;
+    [SerializeField] private Transform HandPosition;
+    [SerializeField] private Transform HeadPosition;
     [SerializeField] private GameObject DesktopTargetPosition;
     [SerializeField] private GameObject UI_ActiveIndicator;
     [SerializeField] private GameObject MainCanvas;
@@ -99,20 +100,19 @@ public class PortableWorldMenu : UdonSharpBehaviour
         CanvasOffset = CanvasOffset * scale;
         popupIndicator.transform.localScale = popupIndicator.transform.localScale  * (scale * SystemScale);
         MainCanvas.transform.localScale = MainCanvas.transform.localScale * (scale * SystemScale);
-        DesktopTargetPosition.transform.localPosition = new Vector3(0f, 0f, 0.16f * scale);
+        DesktopTargetPosition.transform.localPosition = new Vector3(0f, 0f, 0.14f * scale);
     }
 
     public void Update()
     {
         if (!isValidRefs) return;
-        if (Input.GetKeyDown(KeybindDesktop)) if (!state) _spawnMenu(false); else _DespawnMenu();
+        if (Input.GetKeyDown(KeybindDesktop)) Debug.Log("desktop key pressed PWMReava_"); if (!state) _spawnMenu(false); else _DespawnMenu();
         if (Input.GetAxisRaw("Oculus_CrossPlatform_SecondaryThumbstickVertical") < -0.95f || Input.GetKey(KeyCode.Keypad3))
         {
             if (currentHeld == 0 && !state)
             {
-                popupIndicator.transform.position = HandPosition.transform.position;
-                popupIndicator.transform.eulerAngles = new Vector3(HeadPosition.transform.eulerAngles.x, 0f, HeadPosition.transform.eulerAngles.z);
                 popupIndicator.SetActive(true);
+                popupIndicator.transform.SetPositionAndRotation(HandPosition.transform.position, HeadPosition.transform.rotation);
             }
             currentHeld += Time.deltaTime;
             if (currentHeld > holdTimeSeconds)
@@ -134,14 +134,29 @@ public class PortableWorldMenu : UdonSharpBehaviour
         }
     }
 
+    public override void InputMoveHorizontal(float value, UdonInputEventArgs args)
+    {
+        if (state) _DespawnMenu();
+    }
+
+    public override void InputMoveVertical(float value, UdonInputEventArgs args)
+    {
+        if (state) _DespawnMenu();
+    }
+
+    public void _ToggleSound()
+    {
+        useAudioFeedback = !useAudioFeedback;
+    }
+
     public void _spawnMenu(bool isVR)
     {
         if (!isValidRefs) return;
+        Debug.Log("spawn menu PWMReava_");
         state = true;
         if (resetTabOnExit && defaultMenuTab <= 4) _ChangeMenuTo(defaultMenuTab);
         if (isVR){
-            MainCanvas.transform.position = HandPosition.transform.position;
-            MainCanvas.transform.eulerAngles = new Vector3(HeadPosition.transform.eulerAngles.x, 0f, HeadPosition.transform.eulerAngles.z);
+            MainCanvas.transform.SetPositionAndRotation((HandPosition.transform.position + CanvasOffset), HeadPosition.transform.rotation);
         }
         else
         {
@@ -154,6 +169,8 @@ public class PortableWorldMenu : UdonSharpBehaviour
         if (MenusList[SelectedMenu] && MenusList[SelectedMenu].GetComponent<Canvas>())
         {
             MenusList[SelectedMenu].GetComponent<Canvas>().enabled = true;
+            MenusList[SelectedMenu].GetComponent<GraphicRaycaster>().enabled = true;
+            MenusList[SelectedMenu].GetComponent<BoxCollider>().enabled = true;
         }
         if (useAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuOpen);
     }
@@ -168,6 +185,8 @@ public class PortableWorldMenu : UdonSharpBehaviour
         if (MenusList[SelectedMenu] && MenusList[SelectedMenu].GetComponent<Canvas>())
         {
             MenusList[SelectedMenu].GetComponent<Canvas>().enabled = false;
+            MenusList[SelectedMenu].GetComponent<GraphicRaycaster>().enabled = false;
+            MenusList[SelectedMenu].GetComponent<BoxCollider>().enabled = false;
         }
         if (useAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuClose);
     }
