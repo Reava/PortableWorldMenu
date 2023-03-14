@@ -96,7 +96,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
     public void _scaleChange(float scale)
     {
         Debug.LogWarning("PWM: Scale change detected:" + scale + " - Object:");
-        CanvasOffset = new Vector3(CanvasOffset.x * scale, CanvasOffset.y * scale, CanvasOffset.z * scale);
+        CanvasOffset = CanvasOffset * scale;
         popupIndicator.transform.localScale = popupIndicator.transform.localScale  * (scale * SystemScale);
         MainCanvas.transform.localScale = MainCanvas.transform.localScale * (scale * SystemScale);
         DesktopTargetPosition.transform.localPosition = new Vector3(0f, 0f, 0.16f * scale);
@@ -129,7 +129,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
         }
         if (Input.GetButton("Oculus_CrossPlatform_Button4") || Input.GetButton("Oculus_CrossPlatform_Button2") || Input.GetAxisRaw("Oculus_CrossPlatform_SecondaryThumbstickHorizontal") != 0 || Input.GetButton("Horizontal") || Input.GetButton("Vertical") || Input.GetAxisRaw("Oculus_CrossPlatform_SecondaryThumbstickVertical") > 0.95f)
         {
-            _DespawnMenu();
+            if (state) _DespawnMenu();
         }
     }
 
