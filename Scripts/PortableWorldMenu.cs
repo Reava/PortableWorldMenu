@@ -20,15 +20,16 @@ public class PortableWorldMenu : UdonSharpBehaviour
 {
     [Space]
     [Header("Settings")]
-    [Tooltip("Keybind for desktop users")]
-    [SerializeField] private KeyCode KeybindDesktop = KeyCode.E;
     [SerializeField] private bool useAudioFeedback = true;
     [Tooltip("Resets to the default tab of the menu when the menu closes")]
     public bool resetTabOnExit = false;
     [Range(0f, 5f)]
+    [Tooltip("How long to hold in VR to open the menu")]
     [SerializeField] private float holdTimeSeconds = 1.5f;
     [Range(0, 4)]
     [SerializeField] private int defaultMenuTab = 0;
+    [Tooltip("Keybind for desktop users")]
+    [SerializeField] private KeyCode KeybindDesktop = KeyCode.E;
     private int maxMenuNum = 5;
     [Tooltip("Max # of menus is 5, please refer to documentation on how to edit this value.")]
     [SerializeField] private GameObject[] MenusList = new GameObject[5];
@@ -38,7 +39,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [SerializeField] private GameObject popupIndicator;
     [SerializeField] private Transform HandPosition;
     [SerializeField] private Transform HeadPosition;
-    [SerializeField] private GameObject DesktopTargetPosition;
+    [SerializeField] private Transform DesktopTargetPosition;
     [SerializeField] private GameObject UI_ActiveIndicator;
     [SerializeField] private GameObject MainCanvas;
     [Space]
@@ -63,7 +64,8 @@ public class PortableWorldMenu : UdonSharpBehaviour
     private float currentHeld;
     private int SelectedMenu = 0;
     private GameObject ListedMenuCanvas;
-    private Vector3 detectedScale = new Vector3(1f, 1f, 1f);
+    private float detectedScale = 1f;
+    VRCPlayerApi playerApi;
 
     void Start()
     {
@@ -83,6 +85,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
         }
         if (!MainCanvas.GetComponent<Canvas>() || !MainCanvas.GetComponent<BoxCollider>() || !MainCanvas.GetComponent<GraphicRaycaster>()) { _sendDebugError("Missing component on Main Canvas",73); isValidRefs = false; }
         if (!isValidRefs) { MainCanvas.SetActive(false); _sendDebugError("Invalid setup, disabling Menu now..", 74); _disableSelf(); } else { _DespawnMenu(); popupIndicator.SetActive(false); }
+        playerApi = Networking.LocalPlayer;
     }
 
     public void OnPlayerRespawn(VRCPlayerApi player)
@@ -96,11 +99,12 @@ public class PortableWorldMenu : UdonSharpBehaviour
 
     public void _scaleChange(float scale)
     {
-        Debug.LogWarning("PWM: Scale change detected:" + scale + " - Object:");
+        Debug.Log("PWM: Scale change detected:" + scale);
+        detectedScale = scale;
         CanvasOffset = CanvasOffset * scale;
         popupIndicator.transform.localScale = popupIndicator.transform.localScale  * (scale * SystemScale);
         MainCanvas.transform.localScale = MainCanvas.transform.localScale * (scale * SystemScale);
-        DesktopTargetPosition.transform.localPosition = new Vector3(0f, 0f, 0.14f * scale);
+        DesktopTargetPosition.localPosition = new Vector3(0f, 0f, 0.14f * scale);
     }
 
     public void Update()
@@ -122,6 +126,8 @@ public class PortableWorldMenu : UdonSharpBehaviour
             if (currentHeld == 0 && !state)
             {
                 popupIndicator.SetActive(true);
+                HeadPosition.SetPositionAndRotation(playerApi.GetBonePosition(HumanBodyBones.Head), playerApi.GetBoneRotation(HumanBodyBones.Head));
+                HandPosition.SetPositionAndRotation(playerApi.GetBonePosition(HumanBodyBones.RightHand), playerApi.GetBoneRotation(HumanBodyBones.RightHand));
                 popupIndicator.transform.SetPositionAndRotation(HandPosition.transform.position, HeadPosition.transform.rotation);
             }
             currentHeld += Time.deltaTime;
@@ -162,14 +168,17 @@ public class PortableWorldMenu : UdonSharpBehaviour
     public void _spawnMenu(bool isVR)
     {
         if (!isValidRefs) return;
-        Debug.Log("spawn menu PWMReava_");
         state = true;
+        HeadPosition.transform.SetPositionAndRotation(playerApi.GetBonePosition(HumanBodyBones.Head), playerApi.GetBoneRotation(HumanBodyBones.Head));
         if (resetTabOnExit && defaultMenuTab <= 4) _ChangeMenuTo(defaultMenuTab);
         if (isVR){
+            HandPosition.transform.SetPositionAndRotation(playerApi.GetBonePosition(HumanBodyBones.RightHand), playerApi.GetBoneRotation(HumanBodyBones.RightHand));
             MainCanvas.transform.SetPositionAndRotation((HandPosition.transform.position + CanvasOffset), HeadPosition.transform.rotation);
         }
         else
         {
+            DesktopTargetPosition.position = HeadPosition.transform.position;
+            DesktopTargetPosition.localPosition = new Vector3(0f, 0f, 0.25f * detectedScale);
             MainCanvas.transform.SetPositionAndRotation(DesktopTargetPosition.transform.position, HeadPosition.transform.rotation);
         }
         popupIndicator.SetActive(false);
