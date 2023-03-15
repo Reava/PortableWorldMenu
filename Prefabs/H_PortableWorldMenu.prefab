@@ -951,7 +951,10 @@ MonoBehaviour:
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 5578235622992128387}
   portableMenuSystem: {fileID: 89679303961973284}
+  isMenuSelector: 1
   menu: 2
+  optionalEventName: _interact
+  eventDelay: 0.1
 --- !u!114 &5578235622992128387
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1127,7 +1130,10 @@ MonoBehaviour:
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 3001038893838210420}
   portableMenuSystem: {fileID: 89679303961973284}
+  isMenuSelector: 1
   menu: 0
+  optionalEventName: _interact
+  eventDelay: 0.1
 --- !u!114 &3001038893838210420
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2873,7 +2879,10 @@ MonoBehaviour:
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 2040939029645053288}
   portableMenuSystem: {fileID: 89679303961973284}
+  isMenuSelector: 1
   menu: 4
+  optionalEventName: _interact
+  eventDelay: 0.1
 --- !u!114 &2040939029645053288
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3086,7 +3095,10 @@ MonoBehaviour:
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 1521861420465593851}
   portableMenuSystem: {fileID: 89679303961973284}
+  isMenuSelector: 1
   menu: 3
+  optionalEventName: _interact
+  eventDelay: 0.1
 --- !u!114 &1521861420465593851
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3836,7 +3848,10 @@ MonoBehaviour:
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 5523503599717691799}
   portableMenuSystem: {fileID: 89679303961973284}
+  isMenuSelector: 1
   menu: 1
+  optionalEventName: _interact
+  eventDelay: 0.1
 --- !u!114 &5523503599717691799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4960,7 +4975,7 @@ MonoBehaviour:
   popupIndicator: {fileID: 4630254772950741585}
   HandPosition: {fileID: 5143363986670354774}
   HeadPosition: {fileID: 3319557143818410376}
-  DesktopTargetPosition: {fileID: 656187355036965559}
+  DesktopTargetPosition: {fileID: 6714868055605935538}
   UI_ActiveIndicator: {fileID: 328695441264313429}
   MainCanvas: {fileID: 8318993244566438009}
   defaultIndicatorPos: {x: 0, y: 13.75, z: 0}
@@ -5157,7 +5172,7 @@ GameObject:
   - component: {fileID: 8232475079316440282}
   - component: {fileID: 2231320637090437844}
   m_Layer: 0
-  m_Name: Canvas
+  m_Name: CanvasHorizontal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5289,7 +5304,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1269178483499376365}
   m_Layer: 0
-  m_Name: PortableWorldMenu
+  m_Name: H_PortableWorldMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

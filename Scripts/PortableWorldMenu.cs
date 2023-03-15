@@ -30,7 +30,6 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [SerializeField] private int defaultMenuTab = 0;
     [Tooltip("Keybind for desktop users")]
     [SerializeField] private KeyCode KeybindDesktop = KeyCode.E;
-    private int maxMenuNum = 5;
     [Tooltip("Max # of menus is 5, please refer to documentation on how to edit this value.")]
     [SerializeField] private GameObject[] MenusList = new GameObject[5];
     [Space]
@@ -59,6 +58,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [Tooltip("Default Scale of the UI. (Warning: scales to the scale detected of the avatar)")]
     [Range(0.1f, 2.5f)]
     [SerializeField] private float SystemScale = 1f;
+    private int maxMenuNum = 5;
     private bool isValidRefs = true;
     private bool state = false;
     private float currentHeld;
