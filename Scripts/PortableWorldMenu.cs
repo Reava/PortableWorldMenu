@@ -58,6 +58,8 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [Tooltip("Default Scale of the UI. (Warning: scales to the scale detected of the avatar)")]
     [Range(0.1f, 2.5f)]
     [SerializeField] private float SystemScale = 1f;
+    [Space]
+    [SerializeField] private bool enableLogging = true;
     private int maxMenuNum = 5;
     private bool isValidRefs = true;
     private bool state = false;
@@ -69,8 +71,9 @@ public class PortableWorldMenu : UdonSharpBehaviour
 
     void Start()
     {
-        if (!ProgressIndicator || !popupIndicator || !HandPosition || !HeadPosition || !UI_ActiveIndicator || !MainCanvas) { _sendDebugError("Missing Main Reference(s)",64); isValidRefs = false; }
-        if (useAudioFeedback) if (!AudioclipMenuOpen || !AudioclipMenuClose || !AudioclipMenuChange) { _sendDebugError("Missing Audio Clip/Source",65);}
+        if (enableLogging) _sendDebugLog("Start");
+        if (!ProgressIndicator || !popupIndicator || !HandPosition || !HeadPosition || !UI_ActiveIndicator || !MainCanvas) { _sendDebugError("Missing Main Reference(s)"); isValidRefs = false; }
+        if (useAudioFeedback) if (!AudioclipMenuOpen || !AudioclipMenuClose || !AudioclipMenuChange || !AudioFeedbackSource) _sendDebugWarning("Missing Audio Clip/Source");
         int itemp = 0;
         foreach (GameObject o in MenusList)
         {
@@ -78,13 +81,26 @@ public class PortableWorldMenu : UdonSharpBehaviour
             {
                 if (!o.GetComponent<Canvas>() || !o.GetComponent<BoxCollider>() || !o.GetComponent<GraphicRaycaster>())
                 {
-                    _sendDebugError("Invalid Menu #" + itemp + " <color=white>('" + o.gameObject.name + "'),</color> it will be ignored", 68);
+                    _sendDebugError("Invalid Menu #" + itemp + " <color=white>('" + o.gameObject.name + "'),</color> it will be ignored");
                 }
             }
             itemp += 1;
         }
-        if (!MainCanvas.GetComponent<Canvas>() || !MainCanvas.GetComponent<BoxCollider>() || !MainCanvas.GetComponent<GraphicRaycaster>()) { _sendDebugError("Missing component on Main Canvas",73); isValidRefs = false; }
-        if (!isValidRefs) { MainCanvas.SetActive(false); _sendDebugError("Invalid setup, disabling Menu now..", 74); _disableSelf(); } else { _DespawnMenu(); popupIndicator.SetActive(false); }
+        if (!MainCanvas.GetComponent<Canvas>() || !MainCanvas.GetComponent<BoxCollider>() || !MainCanvas.GetComponent<GraphicRaycaster>()) 
+        { 
+            _sendDebugError("Missing component on Main Canvas"); 
+            isValidRefs = false; 
+        }
+        if (!isValidRefs) { 
+            MainCanvas.SetActive(false);
+            _sendDebugError("Invalid setup, disabling Menu now.."); 
+            _disableSelf(); 
+        } 
+        else 
+        {
+            if (state) _DespawnMenu();
+            popupIndicator.SetActive(false); 
+        }
         playerApi = Networking.LocalPlayer;
     }
 
@@ -92,14 +108,17 @@ public class PortableWorldMenu : UdonSharpBehaviour
     {
         if (player.isLocal)
         {
-            if (isValidRefs) _DespawnMenu();
-            popupIndicator.SetActive(false);
+            if (isValidRefs && state)
+            {
+                _DespawnMenu();
+                popupIndicator.SetActive(false);
+            }
         }
     }
 
     public void _scaleChange(float scale)
     {
-        Debug.Log("PWM: Scale change detected:" + scale);
+        if (enableLogging) _sendDebugLog("Scale change detected:" + scale);
         detectedScale = scale;
         CanvasOffset = CanvasOffset * scale;
         popupIndicator.transform.localScale = popupIndicator.transform.localScale  * (scale * SystemScale);
@@ -115,16 +134,19 @@ public class PortableWorldMenu : UdonSharpBehaviour
             if (!state)
             {
                 _spawnMenu(false);
+                if (enableLogging) _sendDebugLog("Spawn from desktop keybind (" + KeybindDesktop + ")");
             }
             else
             {
                 _DespawnMenu();
+                if (enableLogging) _sendDebugLog("Despawn from desktop keybind (" + KeybindDesktop + ")");
             }
         }
         if (Input.GetAxisRaw("Oculus_CrossPlatform_SecondaryThumbstickVertical") < -0.95f || Input.GetKey(KeyCode.Keypad3))
         {
             if (currentHeld == 0 && !state)
             {
+                if (enableLogging) _sendDebugLog("Popup indicator spawn");
                 popupIndicator.SetActive(true);
                 HeadPosition.SetPositionAndRotation(playerApi.GetBonePosition(HumanBodyBones.Head), playerApi.GetBoneRotation(HumanBodyBones.Head));
                 HandPosition.SetPositionAndRotation(playerApi.GetBonePosition(HumanBodyBones.RightHand), playerApi.GetBoneRotation(HumanBodyBones.RightHand));
@@ -133,6 +155,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
             currentHeld += Time.deltaTime;
             if (currentHeld > holdTimeSeconds)
             {
+                if (enableLogging) _sendDebugLog("VR Keybind held for " + currentHeld);
                 if (!state) _spawnMenu(true);
                 currentHeld = 0f;
             }
@@ -140,14 +163,18 @@ public class PortableWorldMenu : UdonSharpBehaviour
         }
         else
         {
-            currentHeld = 0f;
-            ProgressIndicator.fillAmount = 0f;
-            popupIndicator.SetActive(false);
+            if(currentHeld > 0)
+            {
+                if (enableLogging) _sendDebugLog("VR Keybind released");
+                currentHeld = 0f;
+                ProgressIndicator.fillAmount = 0f;
+                popupIndicator.SetActive(false);
+            }
         }
-        if (Input.GetButton("Oculus_CrossPlatform_Button4") || Input.GetButton("Oculus_CrossPlatform_Button2") || Input.GetAxisRaw("Oculus_CrossPlatform_SecondaryThumbstickHorizontal") != 0 || Input.GetButton("Horizontal") || Input.GetButton("Vertical") || Input.GetAxisRaw("Oculus_CrossPlatform_SecondaryThumbstickVertical") > 0.95f)
-        {
-            if (state) _DespawnMenu();
-        }
+       if (Input.GetButton("Oculus_CrossPlatform_Button4") || Input.GetButton("Oculus_CrossPlatform_Button2") || Input.GetAxisRaw("Oculus_CrossPlatform_SecondaryThumbstickHorizontal") != 0 || Input.GetButton("Horizontal") || Input.GetButton("Vertical") || Input.GetAxisRaw("Oculus_CrossPlatform_SecondaryThumbstickVertical") > 0.95f)
+       {
+           if (state) _DespawnMenu();
+       }
     }
 
     public override void InputMoveHorizontal(float value, UdonInputEventArgs args)
@@ -162,11 +189,13 @@ public class PortableWorldMenu : UdonSharpBehaviour
 
     public void _ToggleSound()
     {
+        if (enableLogging) _sendDebugLog("Sound feedback toggle event ("+!useAudioFeedback+")");
         useAudioFeedback = !useAudioFeedback;
     }
 
     public void _spawnMenu(bool isVR)
     {
+        if (enableLogging) _sendDebugLog("Spawn menu event");
         if (!isValidRefs) return;
         state = true;
         HeadPosition.transform.SetPositionAndRotation(playerApi.GetBonePosition(HumanBodyBones.Head), playerApi.GetBoneRotation(HumanBodyBones.Head));
@@ -196,8 +225,9 @@ public class PortableWorldMenu : UdonSharpBehaviour
 
     public void _DespawnMenu()
     {
+        if (enableLogging) _sendDebugLog("Despawn menu event");
         if (!isValidRefs) return;
-        state = false;
+        if (useAudioFeedback && MainCanvas.GetComponent<Canvas>().enabled) AudioFeedbackSource.PlayOneShot(AudioclipMenuClose);
         MainCanvas.GetComponent<Canvas>().enabled = false;
         MainCanvas.GetComponent<GraphicRaycaster>().enabled = false;
         MainCanvas.GetComponent<BoxCollider>().enabled = false;
@@ -207,11 +237,12 @@ public class PortableWorldMenu : UdonSharpBehaviour
             MenusList[SelectedMenu].GetComponent<GraphicRaycaster>().enabled = false;
             MenusList[SelectedMenu].GetComponent<BoxCollider>().enabled = false;
         }
-        if (useAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuClose);
+        state = false;
     }
 
     public void _ChangeMenuTo(int menuSelection)
     {
+        if (enableLogging) _sendDebugLog("Menu change event");
         SelectedMenu = menuSelection;
         if (!isValidRefs || menuSelection >= maxMenuNum) return;
         if (MenusList.Length != 0)
@@ -236,10 +267,12 @@ public class PortableWorldMenu : UdonSharpBehaviour
         }
         else
         {
-            _sendDebugError("No Menus Found", 166);
+            _sendDebugError("No Menus Found");
         }
     }
 
-    private void _sendDebugError(string errorReported, int lineErrored) => Debug.LogError("<color=white>#"+lineErrored+" | Reava_UwUtils:<color=red> <b>" + errorReported + "</b></color>, please review <color=orange>References <color=white>/</color> Settings</color> on: " + gameObject.name + ".</color>", gameObject);
+    private void _sendDebugLog(string log) => Debug.Log("<b> | Reava_UwUtils: " + log + " on: " + gameObject.name + ".</b> ", gameObject);
+    private void _sendDebugWarning(string errorReported) => Debug.LogWarning("<color=white># | Reava_UwUtils:<color=orange> <b>" + errorReported + "</b></color>, this will be ignored when functioning. <color=orange>Check References <color=white>/</color> Settings</color> on: " + gameObject.name + ".</color>", gameObject);
+    private void _sendDebugError(string errorReported) => Debug.LogError("<color=white> | Reava_UwUtils:<color=red> <b>" + errorReported + "</b></color>, please review <color=orange>References <color=white>/</color> Settings</color> on: " + gameObject.name + ".</color>", gameObject);
     private void _disableSelf() { this.gameObject.SetActive(false); } //Shuts the entire system off to prevent things from running for nothing
 }

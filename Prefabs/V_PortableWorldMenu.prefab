@@ -3167,7 +3167,7 @@ MonoBehaviour:
   menu: 0
   sendOptionalEvent: 1
   optionalEventName: _DespawnMenu
-  eventDelay: 0
+  eventDelay: 0.01
 --- !u!114 &5905181104662464377
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3395,7 +3395,7 @@ MonoBehaviour:
   menu: 0
   sendOptionalEvent: 1
   optionalEventName: _ToggleSound
-  eventDelay: 0
+  eventDelay: 0.01
 --- !u!114 &6531181086463251753
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3792,8 +3792,8 @@ MonoBehaviour:
   DesktopTargetPosition: {fileID: 6714868055605935538}
   UI_ActiveIndicator: {fileID: 5330929011762882230}
   MainCanvas: {fileID: 4469683222446023322}
-  defaultIndicatorPos: {x: -23.5, y: 0, z: 0}
-  IndicatorOffset: {x: 9.3, y: 0, z: 0}
+  defaultIndicatorPos: {x: 0, y: 0, z: 0}
+  IndicatorOffset: {x: -9.3, y: 0, z: 0}
   CanvasOffset: {x: 0, y: 0.08, z: -0.18}
   SystemScale: 1.25
 --- !u!114 &5903945708890123295
