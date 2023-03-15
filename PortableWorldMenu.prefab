@@ -917,12 +917,12 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1010286858145089758}
-        m_MethodName: 
+      - m_Target: {fileID: 5578235622992128387}
+        m_MethodName: Interact
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -4952,6 +4952,10 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 626185507477880060}
+  AudioFeedbackSource: {fileID: 5287618464457991852}
+  AudioclipMenuOpen: {fileID: 8300000, guid: f5a59c8a33d68314d8290adfb22b539b, type: 3}
+  AudioclipMenuClose: {fileID: 8300000, guid: f5a59c8a33d68314d8290adfb22b539b, type: 3}
+  AudioclipMenuChange: {fileID: 8300000, guid: 26248e165a6c57143a117a3a69bbb515, type: 3}
   ProgressIndicator: {fileID: 5422354769544972138}
   popupIndicator: {fileID: 4630254772950741585}
   HandPosition: {fileID: 5143363986670354774}
@@ -4959,10 +4963,6 @@ MonoBehaviour:
   DesktopTargetPosition: {fileID: 656187355036965559}
   UI_ActiveIndicator: {fileID: 328695441264313429}
   MainCanvas: {fileID: 8318993244566438009}
-  AudioFeedbackSource: {fileID: 5287618464457991852}
-  AudioclipMenuOpen: {fileID: 8300000, guid: f5a59c8a33d68314d8290adfb22b539b, type: 3}
-  AudioclipMenuClose: {fileID: 8300000, guid: f5a59c8a33d68314d8290adfb22b539b, type: 3}
-  AudioclipMenuChange: {fileID: 8300000, guid: 26248e165a6c57143a117a3a69bbb515, type: 3}
   defaultIndicatorPos: {x: 0, y: 13.75, z: 0}
   IndicatorOffset: {x: 0, y: 7, z: 0}
   CanvasOffset: {x: 0, y: 0.08, z: -0.18}
