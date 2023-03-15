@@ -34,6 +34,12 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [Tooltip("Max # of menus is 5, please refer to documentation on how to edit this value.")]
     [SerializeField] private GameObject[] MenusList = new GameObject[5];
     [Space]
+    [Header("Audio references")]
+    [SerializeField] private AudioSource AudioFeedbackSource;
+    [SerializeField] private AudioClip AudioclipMenuOpen;
+    [SerializeField] private AudioClip AudioclipMenuClose;
+    [SerializeField] private AudioClip AudioclipMenuChange;
+    [Space]
     [Header("References")]
     [SerializeField] private Image ProgressIndicator;
     [SerializeField] private GameObject popupIndicator;
@@ -42,12 +48,6 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [SerializeField] private Transform DesktopTargetPosition;
     [SerializeField] private GameObject UI_ActiveIndicator;
     [SerializeField] private GameObject MainCanvas;
-    [Space]
-    [Header("Audio references")]
-    [SerializeField] private AudioSource AudioFeedbackSource;
-    [SerializeField] private AudioClip AudioclipMenuOpen;
-    [SerializeField] private AudioClip AudioclipMenuClose;
-    [SerializeField] private AudioClip AudioclipMenuChange;
     [Space]
     [Header("Advanced settings, only edit if you know what you're doing!")]
     [Tooltip("This is the default position for the selector when menu 0 is selected")]
