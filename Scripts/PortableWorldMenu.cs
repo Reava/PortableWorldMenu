@@ -217,7 +217,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
         else
         {
             DesktopTargetPosition.position = HeadPosition.transform.position;
-            DesktopTargetPosition.localPosition = new Vector3(0f, 0f, 0.25f * detectedScale);
+            DesktopTargetPosition.localPosition = new Vector3(0f, 0.05f * detectedScale, 0.25f * detectedScale);
             MainCanvas.transform.SetPositionAndRotation(DesktopTargetPosition.transform.position, HeadPosition.transform.rotation);
         }
         popupIndicator.SetActive(false);
