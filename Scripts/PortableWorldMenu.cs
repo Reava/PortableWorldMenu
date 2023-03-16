@@ -19,8 +19,7 @@ using VRC.Udon.Common;
 public class PortableWorldMenu : UdonSharpBehaviour
 {
     [Space]
-    [Header("Settings")]
-    [SerializeField] private bool useAudioFeedback = true;
+    [Header("General Settings")]
     [Tooltip("Resets to the default tab of the menu when the menu closes")]
     public bool resetTabOnExit = false;
     [Range(0f, 5f)]
@@ -30,10 +29,14 @@ public class PortableWorldMenu : UdonSharpBehaviour
     [SerializeField] private int defaultMenuTab = 0;
     [Tooltip("Keybind for desktop users")]
     [SerializeField] private KeyCode KeybindDesktop = KeyCode.E;
-    [Tooltip("Max # of menus is 5, please refer to documentation on how to edit this value.")]
+    [Space]
+    [Tooltip("Max # of menus is currently 5.")]
     [SerializeField] private GameObject[] MenusList = new GameObject[5];
     [Space]
-    [Header("Audio references")]
+    [Header("Audio stuff")]
+    [SerializeField] private bool useAudioFeedback = true;
+    [Range(0f, 0.5f)]
+    [SerializeField] private float AudioFeedbackVolume = 0.2f;
     [SerializeField] private AudioSource AudioFeedbackSource;
     [SerializeField] private AudioClip AudioclipMenuOpen;
     [SerializeField] private AudioClip AudioclipMenuClose;
@@ -101,6 +104,7 @@ public class PortableWorldMenu : UdonSharpBehaviour
             if (state) _DespawnMenu();
             popupIndicator.SetActive(false); 
         }
+        if (AudioFeedbackSource) AudioFeedbackSource.volume = AudioFeedbackVolume;
         playerApi = Networking.LocalPlayer;
     }
 
@@ -175,6 +179,12 @@ public class PortableWorldMenu : UdonSharpBehaviour
        {
            if (state) _DespawnMenu();
        }
+    }
+
+    public void _changeVolume(float newVolume)
+    {
+        AudioFeedbackSource.volume = AudioFeedbackVolume = newVolume;
+        if (enableLogging) _sendDebugLog("Volume changed to: " + newVolume);
     }
 
     public override void InputMoveHorizontal(float value, UdonInputEventArgs args)
