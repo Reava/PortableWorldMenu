@@ -2,6 +2,7 @@
 using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
+using UwUtils;
 
 namespace Superbstingray
 {

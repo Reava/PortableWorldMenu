@@ -116,7 +116,7 @@ MonoBehaviour:
       Data: 6|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: PortableWorldMenu, Assembly-CSharp
+      Data: UwUtils.PortableWorldMenu, Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 

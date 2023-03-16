@@ -21,7 +21,7 @@ MonoBehaviour:
   compiledVersion: 2
   behaviourSyncMode: 1
   hasInteractEvent: 1
-  scriptID: 8293691692644778927
+  scriptID: -3147713111309553300
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
@@ -62,7 +62,7 @@ MonoBehaviour:
       Data: 3|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: PortableWorldMenu, Assembly-CSharp
+      Data: UwUtils.PortableWorldMenu, Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
