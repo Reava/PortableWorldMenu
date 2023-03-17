@@ -22,7 +22,7 @@ namespace UwUtils
         public override void Interact()
         {
             if (!portableMenuSystem) return;
-            if (enableLogging) Debug.Log("<color=white> | Reava_UwUtils: Interact triggered, Parameters: isMenuSelector = " + isMenuSelector + " - menu = " + menu + " - sendOptionalEvent = " + sendOptionalEvent + " - optionalEventName = " + optionalEventName + " - eventDelay = " + eventDelay + "</color> on: <b>" + gameObject.name + ".</b>", gameObject);
+            if (enableLogging) Debug.Log("<color=white> [Reava_/UwUtils/PortableMenuSelector.cs]:: Interact triggered, Parameters: isMenuSelector = " + isMenuSelector + " - menu = " + menu + " - sendOptionalEvent = " + sendOptionalEvent + " - optionalEventName = " + optionalEventName + " - eventDelay = " + eventDelay + "</color> on: <b>" + gameObject.name + ".</b>", gameObject);
             if (isMenuSelector) portableMenuSystem._ChangeMenuTo(menu);
             if (sendOptionalEvent && optionalEventName != null) portableMenuSystem.SendCustomEventDelayedSeconds(optionalEventName, eventDelay);
         }

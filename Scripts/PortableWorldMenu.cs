@@ -285,9 +285,9 @@ namespace UwUtils
             }
         }
 
-        private void _sendDebugLog(string log) => Debug.Log("<b> | Reava_UwUtils: " + log + " on: " + gameObject.name + ".</b> ", gameObject);
-        private void _sendDebugWarning(string errorReported) => Debug.LogWarning("<color=white># | Reava_UwUtils:<color=orange> <b>" + errorReported + "</b></color>, this will be ignored when functioning. <color=orange>Check References <color=white>/</color> Settings</color> on: " + gameObject.name + ".</color>", gameObject);
-        private void _sendDebugError(string errorReported) => Debug.LogError("<color=white> | Reava_UwUtils:<color=red> <b>" + errorReported + "</b></color>, please review <color=orange>References <color=white>/</color> Settings</color> on: " + gameObject.name + ".</color>", gameObject);
+        private void _sendDebugLog(string log) => Debug.Log("<b> [Reava_/UwUtils/PortableWorldMenu.cs]: " + log + " on: " + gameObject.name + ".</b> ", gameObject);
+        private void _sendDebugWarning(string errorReported) => Debug.LogWarning("<color=white> [Reava_/UwUtils/PortableWorldMenu.cs]:<color=orange> <b>" + errorReported + "</b></color>, this will be ignored when functioning. <color=orange>Check References <color=white>/</color> Settings</color> on: " + gameObject.name + ".</color>", gameObject);
+        private void _sendDebugError(string errorReported) => Debug.LogError("<color=white> [Reava_/UwUtils/PortableWorldMenu.cs]:<color=red> <b>" + errorReported + "</b></color>, please review <color=orange>References <color=white>/</color> Settings</color> on: " + gameObject.name + ".</color>", gameObject);
         private void _disableSelf() { this.gameObject.SetActive(false); } //Shuts the entire system off to prevent things from running for nothing
     }
 }
