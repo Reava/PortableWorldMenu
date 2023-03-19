@@ -151,13 +151,14 @@ namespace UwUtils
             }
             if (Input.GetAxisRaw("Oculus_CrossPlatform_SecondaryThumbstickVertical") < -0.95f || Input.GetKey(KeyCode.Keypad3))
             {
+                HeadPosition.SetPositionAndRotation(playerApi.GetBonePosition(HumanBodyBones.Head), playerApi.GetBoneRotation(HumanBodyBones.Head));
+                HandPosition.SetPositionAndRotation(playerApi.GetBonePosition(HumanBodyBones.RightHand), playerApi.GetBoneRotation(HumanBodyBones.RightHand));
+                popupIndicator.transform.SetPositionAndRotation(HandPosition.transform.position, HeadPosition.transform.rotation);
                 if (currentHeld == 0 && !state)
                 {
                     if (enableLogging) _sendDebugLog("Popup indicator spawn");
                     popupIndicator.SetActive(true);
-                    HeadPosition.SetPositionAndRotation(playerApi.GetBonePosition(HumanBodyBones.Head), playerApi.GetBoneRotation(HumanBodyBones.Head));
-                    HandPosition.SetPositionAndRotation(playerApi.GetBonePosition(HumanBodyBones.RightHand), playerApi.GetBoneRotation(HumanBodyBones.RightHand));
-                    popupIndicator.transform.SetPositionAndRotation(HandPosition.transform.position, HeadPosition.transform.rotation);
+                    
                 }
                 currentHeld += Time.deltaTime;
                 if (currentHeld > holdTimeSeconds)
