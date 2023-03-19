@@ -109,6 +109,9 @@ namespace UwUtils
             }
             if (AudioFeedbackSource) AudioFeedbackSource.volume = AudioFeedbackVolume;
             playerApi = Networking.LocalPlayer;
+            // Disable menu and switch to default tab to avoid it being visible or have multiple tabs open at the same time, allows editing tabs without disabling their components in Editor.
+            _ChangeMenuTo(defaultMenuTab);
+            _DespawnMenu();
         }
 
         public void OnPlayerRespawn(VRCPlayerApi player)
