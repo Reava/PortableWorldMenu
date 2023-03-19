@@ -63,9 +63,9 @@ namespace UwUtils
         [Tooltip("Default Scale of the UI. (Warning: scales to the scale detected of the avatar)")]
         [Range(0.1f, 2.5f)]
         [SerializeField] private float SystemScale = 1f;
+        [SerializeField] private int maxMenuNum = 4;
         [Space]
         [SerializeField] private bool enableLogging = true;
-        private int maxMenuNum = 5;
         private bool isValidRefs = true;
         private bool state = false;
         private float currentHeld;
