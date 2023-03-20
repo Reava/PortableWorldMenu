@@ -11,6 +11,8 @@ namespace UwUtils
         [Space]
         [SerializeField] private bool isMenuSelector = true;
         [SerializeField] private int menu = 0;
+        [SerializeField] private bool allowAudioFeedback = true;
+        [Space]
         [Header("Send an additional event?")]
         [SerializeField] private bool sendOptionalEvent = false;
         [SerializeField] private string optionalEventName = "";
@@ -22,7 +24,7 @@ namespace UwUtils
         {
             if (!portableMenuSystem) return;
             if (enableLogging) Debug.Log("<color=white> [Reava_/UwUtils/PortableMenuSelector.cs]:: Interact triggered, Parameters: isMenuSelector = " + isMenuSelector + " - menu = " + menu + " - sendOptionalEvent = " + sendOptionalEvent + " - optionalEventName = " + optionalEventName + " - eventDelay = " + eventDelay + "</color> on: <b>" + gameObject.name + ".</b>", gameObject);
-            if (isMenuSelector) portableMenuSystem._ChangeMenuTo(menu);
+            if (isMenuSelector) portableMenuSystem._ChangeMenuTo(menu, allowAudioFeedback);
             if (sendOptionalEvent && optionalEventName != null) portableMenuSystem.SendCustomEventDelayedSeconds(optionalEventName, eventDelay);
         }
     }

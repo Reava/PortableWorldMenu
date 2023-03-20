@@ -67,7 +67,7 @@ namespace UwUtils
         [Space]
         [SerializeField] private bool enableLogging = true;
         private bool isValidRefs = true;
-        private bool state = false;
+        private bool state = true;
         private float currentHeld;
         private int SelectedMenu = 0;
         private GameObject ListedMenuCanvas;
@@ -80,7 +80,6 @@ namespace UwUtils
             canvasinputs[0].value = CanvasOffset.x;
             canvasinputs[1].value = CanvasOffset.y;
             canvasinputs[2].value = CanvasOffset.z;
-            if (enableLogging) _sendDebugLog("Start");
             if (!ProgressIndicator || !popupIndicator || !HandPosition || !HeadPosition || !UI_ActiveIndicator || !MainCanvas) { _sendDebugError("Missing Main Reference(s)"); isValidRefs = false; }
             if (useAudioFeedback) if (!AudioclipMenuOpen || !AudioclipMenuClose || !AudioclipMenuChange || !AudioFeedbackSource) _sendDebugWarning("Missing Audio Clip/Source");
             int itemp = 0;
@@ -115,7 +114,7 @@ namespace UwUtils
             if (AudioFeedbackSource) AudioFeedbackSource.volume = AudioFeedbackVolume;
             playerApi = Networking.LocalPlayer;
             // Disable menu and switch to default tab to avoid it being visible or have multiple tabs open at the same time, allows editing tabs without disabling their components in Editor.
-            _ChangeMenuTo(defaultMenuTab);
+            _ChangeMenuTo(defaultMenuTab, false);
             _DespawnMenu(false);
         }
 
@@ -222,7 +221,7 @@ namespace UwUtils
             if (!isValidRefs) return;
             state = true;
             HeadPosition.transform.SetPositionAndRotation(playerApi.GetBonePosition(HumanBodyBones.Head), playerApi.GetBoneRotation(HumanBodyBones.Head));
-            if (resetTabOnExit && defaultMenuTab <= 4) _ChangeMenuTo(defaultMenuTab);
+            if (resetTabOnExit && defaultMenuTab <= 4) _ChangeMenuTo(defaultMenuTab, true);
             if (isVR)
             {
                 HandPosition.transform.SetPositionAndRotation(playerApi.GetBonePosition(HumanBodyBones.RightHand), playerApi.GetBoneRotation(HumanBodyBones.RightHand));
@@ -264,9 +263,9 @@ namespace UwUtils
             state = false;
         }
 
-        public void _ChangeMenuTo(int menuSelection)
+        public void _ChangeMenuTo(int menuSelection, bool overrideAudio)
         {
-            if (enableLogging) _sendDebugLog("Menu change event");
+            if (enableLogging) _sendDebugLog("Menu change event to " + menuSelection);
             SelectedMenu = menuSelection;
             if (!isValidRefs || menuSelection >= maxMenuNum) return;
             if (MenusList.Length != 0)
@@ -287,7 +286,7 @@ namespace UwUtils
                     MenusList[menuSelection].GetComponent<BoxCollider>().enabled = true;
                 }
                 UI_ActiveIndicator.transform.localPosition = new Vector3(defaultIndicatorPos.x - (IndicatorOffset.x * menuSelection), defaultIndicatorPos.y - (IndicatorOffset.y * menuSelection), defaultIndicatorPos.z - (IndicatorOffset.z * menuSelection));
-                if (useAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuChange);
+                if (useAudioFeedback && overrideAudio) AudioFeedbackSource.PlayOneShot(AudioclipMenuChange);
             }
             else
             {
