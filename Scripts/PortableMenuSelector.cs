@@ -10,7 +10,6 @@ namespace UwUtils
         [SerializeField] private PortableWorldMenu portableMenuSystem;
         [Space]
         [SerializeField] private bool isMenuSelector = true;
-        [Range(0, 4)]
         [SerializeField] private int menu = 0;
         [Header("Send an additional event?")]
         [SerializeField] private bool sendOptionalEvent = false;
