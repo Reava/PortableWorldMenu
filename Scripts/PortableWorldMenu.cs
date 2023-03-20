@@ -230,7 +230,7 @@ namespace UwUtils
             else
             {
                 DesktopTargetPosition.position = HeadPosition.transform.position;
-                DesktopTargetPosition.localPosition = new Vector3(0f, 0.05f * detectedScale, 0.25f * detectedScale);
+                DesktopTargetPosition.localPosition = new Vector3(0f, 0.04f * detectedScale, 0.35f * detectedScale);
                 MainCanvas.transform.SetPositionAndRotation(DesktopTargetPosition.transform.position, HeadPosition.transform.rotation);
             }
             popupIndicator.SetActive(false);
