@@ -84,6 +84,7 @@ namespace UwUtils
             if (!ProgressIndicator || !popupIndicator || !HandPosition || !HeadPosition || !UI_ActiveIndicator || !MainCanvas) { _sendDebugError("Missing Main Reference(s)"); isValidRefs = false; }
             if (useAudioFeedback) if (!AudioclipMenuOpen || !AudioclipMenuClose || !AudioclipMenuChange || !AudioFeedbackSource) _sendDebugWarning("Missing Audio Clip/Source");
             int itemp = 0;
+            maxMenuNum += 1;
             foreach (GameObject o in MenusList)
             {
                 if (o)
