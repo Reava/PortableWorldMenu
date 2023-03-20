@@ -59,7 +59,7 @@ namespace UwUtils
         [Tooltip("Indicator offset substracted to the default position, multiplied by menu selection.")]
         [SerializeField] private Vector3 IndicatorOffset = new Vector3(0f, 7f, 0f);
         [Tooltip("Canvas Offset added to the transform of the hand target.")]
-        [SerializeField] private Vector3 CanvasOffset = new Vector3(0f, 0f, 0f);
+        [SerializeField] public Vector3 CanvasOffset = new Vector3(0f, 0f, 0f);
         [Tooltip("Default Scale of the UI. (Warning: scales to the scale detected of the avatar)")]
         [Range(0.1f, 2.5f)]
         [SerializeField] private float SystemScale = 1f;
@@ -73,9 +73,13 @@ namespace UwUtils
         private GameObject ListedMenuCanvas;
         private float detectedScale = 1f;
         VRCPlayerApi playerApi;
+        public Slider[] canvasinputs = new Slider[3];
 
         void Start()
         {
+            canvasinputs[0].value = CanvasOffset.x;
+            canvasinputs[1].value = CanvasOffset.y;
+            canvasinputs[2].value = CanvasOffset.z;
             if (enableLogging) _sendDebugLog("Start");
             if (!ProgressIndicator || !popupIndicator || !HandPosition || !HeadPosition || !UI_ActiveIndicator || !MainCanvas) { _sendDebugError("Missing Main Reference(s)"); isValidRefs = false; }
             if (useAudioFeedback) if (!AudioclipMenuOpen || !AudioclipMenuClose || !AudioclipMenuChange || !AudioFeedbackSource) _sendDebugWarning("Missing Audio Clip/Source");
@@ -104,14 +108,14 @@ namespace UwUtils
             }
             else
             {
-                if (state) _DespawnMenu();
+                if (state) _DespawnMenu(false);
                 popupIndicator.SetActive(false);
             }
             if (AudioFeedbackSource) AudioFeedbackSource.volume = AudioFeedbackVolume;
             playerApi = Networking.LocalPlayer;
             // Disable menu and switch to default tab to avoid it being visible or have multiple tabs open at the same time, allows editing tabs without disabling their components in Editor.
             _ChangeMenuTo(defaultMenuTab);
-            _DespawnMenu();
+            _DespawnMenu(false);
         }
 
         public void OnPlayerRespawn(VRCPlayerApi player)
@@ -120,7 +124,7 @@ namespace UwUtils
             {
                 if (isValidRefs && state)
                 {
-                    _DespawnMenu();
+                    _DespawnMenu(false);
                     popupIndicator.SetActive(false);
                 }
             }
@@ -138,17 +142,18 @@ namespace UwUtils
 
         public void Update()
         {
+            CanvasOffset = new Vector3(canvasinputs[0].value, canvasinputs[1].value, canvasinputs[2].value);
             if (!isValidRefs) return;
             if (Input.GetKeyDown(KeybindDesktop))
             {
                 if (!state)
                 {
-                    _spawnMenu(false);
+                    _spawnMenu(false, true);
                     if (enableLogging) _sendDebugLog("Spawn from desktop keybind (" + KeybindDesktop + ")");
                 }
                 else
                 {
-                    _DespawnMenu();
+                    _DespawnMenu(true);
                     if (enableLogging) _sendDebugLog("Despawn from desktop keybind (" + KeybindDesktop + ")");
                 }
             }
@@ -167,7 +172,7 @@ namespace UwUtils
                 if (currentHeld > holdTimeSeconds)
                 {
                     if (enableLogging) _sendDebugLog("VR Keybind held for " + currentHeld);
-                    if (!state) _spawnMenu(true);
+                    if (!state) _spawnMenu(true, true);
                     currentHeld = 0f;
                 }
                 ProgressIndicator.fillAmount = currentHeld / holdTimeSeconds;
@@ -184,7 +189,7 @@ namespace UwUtils
             }
             if (Input.GetButton("Oculus_CrossPlatform_Button4") || Input.GetButton("Oculus_CrossPlatform_Button2") || Input.GetAxisRaw("Oculus_CrossPlatform_SecondaryThumbstickHorizontal") != 0 || Input.GetButton("Horizontal") || Input.GetButton("Vertical") || Input.GetAxisRaw("Oculus_CrossPlatform_SecondaryThumbstickVertical") > 0.95f)
             {
-                if (state) _DespawnMenu();
+                if (state) _DespawnMenu(true);
             }
         }
 
@@ -196,12 +201,12 @@ namespace UwUtils
 
         public override void InputMoveHorizontal(float value, UdonInputEventArgs args)
         {
-            if (state) _DespawnMenu();
+            if (state) _DespawnMenu(true);
         }
 
         public override void InputMoveVertical(float value, UdonInputEventArgs args)
         {
-            if (state) _DespawnMenu();
+            if (state) _DespawnMenu(true);
         }
 
         public void _ToggleSound()
@@ -210,7 +215,7 @@ namespace UwUtils
             useAudioFeedback = !useAudioFeedback;
         }
 
-        public void _spawnMenu(bool isVR)
+        public void _spawnMenu(bool isVR, bool useSound)
         {
             if (enableLogging) _sendDebugLog("Spawn menu event");
             if (!isValidRefs) return;
@@ -238,14 +243,14 @@ namespace UwUtils
                 MenusList[SelectedMenu].GetComponent<GraphicRaycaster>().enabled = true;
                 MenusList[SelectedMenu].GetComponent<BoxCollider>().enabled = true;
             }
-            if (useAudioFeedback) AudioFeedbackSource.PlayOneShot(AudioclipMenuOpen);
+            if (useAudioFeedback && useSound) AudioFeedbackSource.PlayOneShot(AudioclipMenuOpen);
         }
 
-        public void _DespawnMenu()
+        public void _DespawnMenu(bool useSound)
         {
             if (enableLogging) _sendDebugLog("Despawn menu event");
             if (!isValidRefs) return;
-            if (useAudioFeedback && MainCanvas.GetComponent<Canvas>().enabled) AudioFeedbackSource.PlayOneShot(AudioclipMenuClose);
+            if (useAudioFeedback && MainCanvas.GetComponent<Canvas>().enabled && useSound) AudioFeedbackSource.PlayOneShot(AudioclipMenuClose);
             MainCanvas.GetComponent<Canvas>().enabled = false;
             MainCanvas.GetComponent<GraphicRaycaster>().enabled = false;
             MainCanvas.GetComponent<BoxCollider>().enabled = false;
