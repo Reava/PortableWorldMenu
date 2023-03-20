@@ -4,7 +4,6 @@ A portable menu for VRChat worlds that can be summoned anywhere by users to cont
 - Supports Horizontal and Vertical layouts 
 - UI modules
 - VR and desktop
-- Up to 5 tabs
 - Comes with premade UI "addons" you can add to fit your needs
 - Fully configurable offsets
 - Configurable hold time
