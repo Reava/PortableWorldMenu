@@ -161,7 +161,8 @@ namespace UwUtils
             {
                 HeadPosition.SetPositionAndRotation(playerApi.GetBonePosition(HumanBodyBones.Head), playerApi.GetBoneRotation(HumanBodyBones.Head));
                 HandPosition.SetPositionAndRotation(playerApi.GetBonePosition(HumanBodyBones.RightHand), playerApi.GetBoneRotation(HumanBodyBones.RightHand));
-                popupIndicator.transform.SetPositionAndRotation(HandPosition.transform.position, HeadPosition.transform.rotation);
+                popupIndicator.transform.localPosition = HandPosition.transform.position + CanvasOffset;
+                popupIndicator.transform.localRotation = HeadPosition.transform.rotation;
                 if (currentHeld == 0 && !state)
                 {
                     if (enableLogging) _sendDebugLog("Popup indicator spawn");
@@ -217,6 +218,7 @@ namespace UwUtils
 
         public void _spawnMenu(bool isVR, bool useSound)
         {
+            _sendDebugLog("Canvas offsets are: x " + CanvasOffset.x + " y " + CanvasOffset.y + " z " + CanvasOffset.z + ""); // remove later
             if (enableLogging) _sendDebugLog("Spawn menu event");
             if (!isValidRefs) return;
             state = true;
@@ -225,7 +227,9 @@ namespace UwUtils
             if (isVR)
             {
                 HandPosition.transform.SetPositionAndRotation(playerApi.GetBonePosition(HumanBodyBones.RightHand), playerApi.GetBoneRotation(HumanBodyBones.RightHand));
-                MainCanvas.transform.SetPositionAndRotation((HandPosition.transform.position + CanvasOffset), HeadPosition.transform.rotation);
+                //MainCanvas.transform.SetPositionAndRotation((HandPosition.transform.position + CanvasOffset), HeadPosition.transform.rotation);
+                MainCanvas.transform.localPosition = HandPosition.transform.position + CanvasOffset;
+                MainCanvas.transform.localRotation = HeadPosition.transform.rotation;
             }
             else
             {
