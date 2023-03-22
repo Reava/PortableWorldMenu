@@ -48,6 +48,7 @@ namespace UwUtils
         [SerializeField] private Image ProgressIndicator;
         [SerializeField] private GameObject popupIndicator;
         [SerializeField] private Transform HandPosition;
+        [SerializeField] private Transform HandOffsetPosition;
         [SerializeField] private Transform HeadPosition;
         [SerializeField] private Transform DesktopTargetPosition;
         [SerializeField] private GameObject UI_ActiveIndicator;
@@ -161,7 +162,8 @@ namespace UwUtils
             {
                 HeadPosition.SetPositionAndRotation(playerApi.GetBonePosition(HumanBodyBones.Head), playerApi.GetBoneRotation(HumanBodyBones.Head));
                 HandPosition.SetPositionAndRotation(playerApi.GetBonePosition(HumanBodyBones.RightHand), playerApi.GetBoneRotation(HumanBodyBones.RightHand));
-                popupIndicator.transform.localPosition = HandPosition.transform.position + CanvasOffset;
+                HandOffsetPosition.transform.localPosition = CanvasOffset;
+                popupIndicator.transform.position = HandOffsetPosition.transform.position;
                 popupIndicator.transform.localRotation = HeadPosition.transform.rotation;
                 if (currentHeld == 0 && !state)
                 {
