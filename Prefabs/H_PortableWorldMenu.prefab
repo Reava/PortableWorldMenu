@@ -5514,6 +5514,7 @@ MonoBehaviour:
   ProgressIndicator: {fileID: 5422354769544972138}
   popupIndicator: {fileID: 4630254772950741585}
   HandPosition: {fileID: 5143363986670354774}
+  HandOffsetPosition: {fileID: 0}
   HeadPosition: {fileID: 3319557143818410376}
   DesktopTargetPosition: {fileID: 6714868055605935538}
   UI_ActiveIndicator: {fileID: 328695441264313429}
@@ -5521,7 +5522,7 @@ MonoBehaviour:
   defaultIndicatorPos: {x: 0, y: 13.75, z: 0}
   IndicatorOffset: {x: 0, y: 7, z: 0}
   CanvasOffset: {x: 0, y: 0.08, z: -0.18}
-  SystemScale: 1.25
+  SystemScale: 2
   maxMenuNum: 4
   enableLogging: 1
   canvasinputs:
