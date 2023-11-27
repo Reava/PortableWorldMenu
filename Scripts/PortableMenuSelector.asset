@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: PortableMenuSelector
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: f82d7eeb794b53f4b9c4a40f1f61f87e,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 358159da9d156eb4c9a1f3e3a0940197,
     type: 2}
   udonAssembly: 
   assemblyError: 
