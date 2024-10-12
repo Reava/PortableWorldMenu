@@ -1,6 +1,7 @@
 ﻿using UdonSharp;
 using UnityEngine;
 using UwUtils;
+using VRC.SDKBase;
 
 namespace UwUtils
 {
@@ -22,8 +23,8 @@ namespace UwUtils
         [SerializeField] private bool enableLogging = true;
         public override void Interact()
         {
-            if (!portableMenuSystem) return;
-            if (enableLogging) Debug.Log("<color=white> [Reava_/UwUtils/PortableMenuSelector.cs]:: Interact triggered, Parameters: isMenuSelector = " + isMenuSelector + " - menu = " + menu + " - sendOptionalEvent = " + sendOptionalEvent + " - optionalEventName = " + optionalEventName + " - eventDelay = " + eventDelay + "</color> on: <b>" + gameObject.name + ".</b>", gameObject);
+            if (!Utilities.IsValid(portableMenuSystem)) return;
+            if (enableLogging) Debug.Log("<color=white> [UwUtils/PortableMenuSelector.cs]:: Interact triggered, Parameters: isMenuSelector = " + isMenuSelector + " - menu = " + menu + " - sendOptionalEvent = " + sendOptionalEvent + " - optionalEventName = " + optionalEventName + " - eventDelay = " + eventDelay + "</color> on: <b>" + gameObject.name + ".</b>", gameObject);
             if (isMenuSelector) portableMenuSystem._ChangeMenuTo(menu, allowAudioFeedback);
             if (sendOptionalEvent && optionalEventName != null) portableMenuSystem.SendCustomEventDelayedSeconds(optionalEventName, eventDelay);
         }

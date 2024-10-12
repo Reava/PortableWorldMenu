@@ -96,11 +96,11 @@ namespace UwUtils
                 }
                 itemp += 1;
             }
-            if (!MainCanvas.GetComponent<Canvas>() || !MainCanvas.GetComponent<BoxCollider>() || !MainCanvas.GetComponent<GraphicRaycaster>())
+            /*if (!MainCanvas.GetComponent<Canvas>() || !MainCanvas.GetComponent<BoxCollider>() || !MainCanvas.GetComponent<GraphicRaycaster>())
             {
                 _sendDebugError("Missing component on Main Canvas");
                 isValidRefs = false;
-            }
+            }*/
             if (!isValidRefs)
             {
                 MainCanvas.SetActive(false);
@@ -300,9 +300,9 @@ namespace UwUtils
             }
         }
 
-        private void _sendDebugLog(string log) => Debug.Log("<b> [Reava_/UwUtils/PortableWorldMenu.cs]: " + log + " on: " + gameObject.name + ".</b> ", gameObject);
-        private void _sendDebugWarning(string errorReported) => Debug.LogWarning("<color=white> [Reava_/UwUtils/PortableWorldMenu.cs]:<color=orange> <b>" + errorReported + "</b></color>, this will be ignored when functioning. <color=orange>Check References <color=white>/</color> Settings</color> on: " + gameObject.name + ".</color>", gameObject);
-        private void _sendDebugError(string errorReported) => Debug.LogError("<color=white> [Reava_/UwUtils/PortableWorldMenu.cs]:<color=red> <b>" + errorReported + "</b></color>, please review <color=orange>References <color=white>/</color> Settings</color> on: " + gameObject.name + ".</color>", gameObject);
+        private void _sendDebugLog(string log) => Debug.Log("<b> [UwUtils/PortableWorldMenu.cs]: " + log + " on: " + gameObject.name + ".</b> ", gameObject);
+        private void _sendDebugWarning(string errorReported) => Debug.LogWarning("<color=white> [UwUtils/PortableWorldMenu.cs]:<color=orange> <b>" + errorReported + "</b></color>, this will be ignored when functioning. <color=orange>Check References <color=white>/</color> Settings</color> on: " + gameObject.name + ".</color>", gameObject);
+        private void _sendDebugError(string errorReported) => Debug.LogError("<color=white> [UwUtils/PortableWorldMenu.cs]:<color=red> <b>" + errorReported + "</b></color>, please review <color=orange>References <color=white>/</color> Settings</color> on: " + gameObject.name + ".</color>", gameObject);
         private void _disableSelf() { this.gameObject.SetActive(false); } //Shuts the entire system off to prevent things from running for nothing
     }
 }
