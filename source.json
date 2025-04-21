@@ -1,0 +1,18 @@
+{
+    "name":"Portable World Menu",
+    "id":"chirp.reava.portableworldmenu",
+    "author":{
+        "name":"Reava_",
+    	"email": "reava.vr@gmail.com",
+    	"url": "https://github.com/Reava/"
+    },
+    "description":"A portable menu for VRChat worlds that can be summoned anywhere by users to control various settings ",
+    "infoLink":{
+        "url":"https://github.com/Reava/PortableWorldMenu/blob/main/README.md",
+        "text":"How to Use (Readme)"
+    },
+    "url":"https://reava.github.io/PortableWorldMenu/index.json",
+    "githubRepos":[
+        "Reava/PortableWorldMenu"
+    ]
+}

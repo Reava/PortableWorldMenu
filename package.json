@@ -1,0 +1,19 @@
+{
+  "name": "chirp.reava.portableworldmenu",
+  "displayName": "Portable World Menu",
+  "version": "0.4.0-pre.1",
+  "unity": "2022.3",
+  "description": "A portable menu for VRChat worlds that can be summoned anywhere by users to control various settings",
+  "author": {
+    "name": "Reava_",
+    "email": "reava.vr@gmail.com",
+    "url": "https://github.com/Reava"
+  },
+  "gitDependencies": {},
+  "vpmDependencies": {
+    "com.vrchat.worlds": ">=3.7.4"
+  },
+    "legacyFolders": {
+        "Assets\\Reava_\\PortableWorldMenu": ""
+    }
+}
