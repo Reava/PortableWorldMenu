@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: AvatarChangeEvents
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 06cde51348fad5e4cbd5b9fd482d1b23,
-    type: 2}
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 1b9359d3e0628e5488048478172b9320, type: 2}
   udonAssembly: 
   assemblyError: 
   sourceCsScript: {fileID: 11500000, guid: f5a1a89c72827f148bff59ec4de80296, type: 3}
@@ -116,7 +115,7 @@ MonoBehaviour:
       Data: 6|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: UwUtils.PortableWorldMenu, Assembly-CSharp
+      Data: UwUtils.PortableWorldMenu, chirp.reava.portableworldmenu
     - Name: 
       Entry: 8
       Data: 

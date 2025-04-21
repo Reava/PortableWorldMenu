@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: PortableWorldMenu
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: ebe9d5169ff24f94e8e9368d59ea40f8,
-    type: 2}
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 7cc8c832b5bd94046863306c0c0b2770, type: 2}
   udonAssembly: 
   assemblyError: 
   sourceCsScript: {fileID: 11500000, guid: c68fa950a25d8dc4fb684df57f767618, type: 3}

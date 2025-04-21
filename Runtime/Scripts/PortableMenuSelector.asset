@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: PortableMenuSelector
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 358159da9d156eb4c9a1f3e3a0940197,
-    type: 2}
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 30974ed9e7c3d9849966eff7e6f4dad2, type: 2}
   udonAssembly: 
   assemblyError: 
   sourceCsScript: {fileID: 11500000, guid: a2f921afc2863e64ebfc6bd167d30c54, type: 3}
@@ -62,7 +61,7 @@ MonoBehaviour:
       Data: 3|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: UwUtils.PortableWorldMenu, Assembly-CSharp
+      Data: UwUtils.PortableWorldMenu, chirp.reava.portableworldmenu
     - Name: 
       Entry: 8
       Data: 
