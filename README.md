@@ -1,3 +1,11 @@
+
+<div align=left>
+  <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/reava/PortableWorldMenu/release.yml?style=for-the-badge">
+  <img alt="GitHub" src="https://img.shields.io/github/license/Reava/PortableWorldMenu?color=blue&style=for-the-badge">
+  <a href="https://github.com/Reava/PortableWorldMenu/releases/latest/"><img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/reava/PortableWorldMenu?logo=unity&style=for-the-badge"></a>
+  <a href="https://github.com/Reava/PortableWorldMenu/releases/latest/"><img alt="GitHub all releases" src="https://img.shields.io/github/downloads/reava/PortableWorldMenu/total?color=blue&style=for-the-badge"></a>
+</div>
+
 # PortableWorldMenu
 A portable menu for VRChat worlds that can be summoned anywhere by users to control various settings via UI
 
