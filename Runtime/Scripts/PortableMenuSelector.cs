@@ -24,7 +24,7 @@ namespace UwUtils
         public override void Interact()
         {
             if (!Utilities.IsValid(portableMenuSystem)) return;
-            if (enableLogging) Debug.Log("<color=white> [UwUtils/PortableMenuSelector.cs]:: Interact triggered, Parameters: isMenuSelector = " + isMenuSelector + " - menu = " + menu + " - sendOptionalEvent = " + sendOptionalEvent + " - optionalEventName = " + optionalEventName + " - eventDelay = " + eventDelay + "</color> on: <b>" + gameObject.name + ".</b>", gameObject);
+            if (enableLogging) Debug.Log("[Reava/UwUtils/PortableMenuSelector.cs]: Interact triggered, Parameters: isMenuSelector = " + isMenuSelector + " - menu = " + menu + " - sendOptionalEvent = " + sendOptionalEvent + " - optionalEventName = " + optionalEventName + " - eventDelay = " + eventDelay + " on: <b>" + gameObject.name + ".</b>", gameObject);
             if (isMenuSelector) portableMenuSystem._ChangeMenuTo(menu, allowAudioFeedback);
             if (sendOptionalEvent && optionalEventName != null) portableMenuSystem.SendCustomEventDelayedSeconds(optionalEventName, eventDelay);
         }
